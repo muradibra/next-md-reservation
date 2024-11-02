@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(cuid())
+  externalId   String        @unique
+  email        String        @unique
+  name         String
+  role         Role          @default(USER)
+  reservations Reservation[]
+  reviews      Review[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model Doctor {
+  id           String        @id @default(cuid())
+  firstName    String
+  lastName     String
+  specialty    String
+  timeSlots    TimeSlot[] // Reference to available time slots
+  reservations Reservation[] // Reference to reservations
+  reviews      Review[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model TimeSlot {
+  id        String   @id @default(cuid())
+  doctorId  String
+  date      DateTime // Stores the specific day (e.g., 2024-10-31)
+  hour      Int // Stores the hour (e.g., 9 for 9 AM, 17 for 5 PM)
+  available Boolean  @default(true) // Indicates if this slot is available
+
+  doctor      Doctor       @relation(fields: [doctorId], references: [id])
+  reservation Reservation? // Optional link to Reservation when booked
+
+  @@unique([doctorId, date, hour]) // Ensure unique slots per doctor per day and hour
+}
+
+model Reservation {
+  id       String  @id @default(cuid())
+  userId   String
+  doctorId String
+  slotId   String  @unique // Link to specific time slot
+  status   String // 'pending', 'confirmed', 'cancelled'
+  message  String?
+
+  user     User     @relation(fields: [userId], references: [id])
+  doctor   Doctor   @relation(fields: [doctorId], references: [id])
+  timeSlot TimeSlot @relation(fields: [slotId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Review {
+  id       String  @id @default(cuid())
+  userId   String
+  doctorId String
+  rating   Int
+  comment  String?
+
+  user   User   @relation(fields: [userId], references: [id])
+  doctor Doctor @relation(fields: [doctorId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+}
