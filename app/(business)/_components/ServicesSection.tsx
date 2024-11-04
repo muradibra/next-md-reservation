@@ -45,7 +45,7 @@ export const ServicesSection = () => {
             </div>
           </div>
           <div className="services-right md:w-[48%] md:flex md:flex-col md:gap-y-[20px] overflow-y-auto ">
-            <div className="service-right__card p-[20px] bg-white rounded-md flex flex-col sm:flex-row sm:gap-x-[20px] sm:items-center md:flex-col md:items-baseline lg:flex-row lg:items-center">
+            <div className="service-right__card p-[20px] mb-[20px]  bg-white rounded-md flex flex-col sm:flex-row sm:gap-x-[20px] sm:items-center md:flex-col md:items-baseline lg:flex-row lg:items-center">
               <div className="service-right__card-img rounded-md overflow-hidden aspect-[7/8] sm:w-[48%] md:w-full">
                 <Image
                   src={service1}
@@ -71,7 +71,7 @@ export const ServicesSection = () => {
                 </Link>
               </div>
             </div>
-            <div className="service-right__card p-[20px] bg-white rounded-md flex flex-col sm:flex-row sm:gap-x-[20px] sm:items-center md:flex-col md:items-baseline lg:flex-row lg:items-center">
+            <div className="service-right__card p-[20px] mb-[20px]  bg-white rounded-md flex flex-col sm:flex-row sm:gap-x-[20px] sm:items-center md:flex-col md:items-baseline lg:flex-row lg:items-center">
               <div className="service-right__card-img rounded-md overflow-hidden aspect-[7/8] sm:w-[48%] md:w-full">
                 <Image
                   src={service2}
@@ -97,7 +97,7 @@ export const ServicesSection = () => {
                 </Link>
               </div>
             </div>
-            <div className="service-right__card p-[20px] bg-white rounded-md flex flex-col sm:flex-row sm:gap-x-[20px] sm:items-center md:flex-col md:items-baseline lg:flex-row lg:items-center">
+            <div className="service-right__card p-[20px] mb-[20px]  bg-white rounded-md flex flex-col sm:flex-row sm:gap-x-[20px] sm:items-center md:flex-col md:items-baseline lg:flex-row lg:items-center">
               <div className="service-right__card-img rounded-md overflow-hidden aspect-[7/8] sm:w-[48%] md:w-full">
                 <Image
                   src={service3}

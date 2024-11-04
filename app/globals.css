@@ -25,7 +25,7 @@ body {
 }
 
 .menu-dropdown.open {
-  max-height: 455px;
+  max-height: 485px;
 }
 
 .footer-grid {
@@ -38,6 +38,13 @@ body {
 .main-btn {
   @apply inline-block rounded-[60px] border border-[#009ace] bg-[#009ace] transition-all duration-300 hover:bg-transparent hover:text-black px-[24px] py-[14px] text-white;
 }
+
+/* .book-bg-img {
+  background-image: url("/app/assets/images/book-image.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+} */
 
 @layer base {
   :root {

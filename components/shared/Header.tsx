@@ -7,12 +7,14 @@ import { navItems } from "@/constants";
 import Link from "next/link";
 import logo from "@/app/assets/images/logo.svg";
 import { ClerkLoaded, UserButton } from "@clerk/nextjs";
+import { getCurrentUserFromDb } from "@/actions/user";
 
 type Props = {
   userId: string | null;
+  role: "ADMIN" | "USER";
 };
 
-export const Header = ({ userId }: Props) => {
+export const Header = ({ userId, role }: Props) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isNavDropdownOpen, setIsNavDropdownOpen] = useState(false);
   const navItemsWithoutPages = navItems.slice(0, 4);
@@ -64,6 +66,7 @@ export const Header = ({ userId }: Props) => {
               </Link>
             </li>
           ))}
+
           <li className="py-2 w-full">
             <span
               onClick={toggleDropdown}
@@ -79,10 +82,22 @@ export const Header = ({ userId }: Props) => {
             {isDropdownOpen && (
               <ul className="mt-2 bg-white rounded-md">
                 {navItemsWithPages.map((item) => (
-                  <li key={item.label} className="px-4 py-2 hover:bg-gray-100">
+                  <li
+                    key={item.label}
+                    className="px-4 py-2 hover:bg-gray-100"
+                    onClick={() => setIsNavDropdownOpen(false)}
+                  >
                     <Link href={item.href}>{item.label}</Link>
                   </li>
                 ))}
+                {role !== null && role === "ADMIN" && (
+                  <li
+                    className="px-4 py-2 hover:bg-gray-100"
+                    onClick={() => setIsNavDropdownOpen(false)}
+                  >
+                    <Link href={`/dashboard`}>Dashboard</Link>
+                  </li>
+                )}
               </ul>
             )}
           </li>
@@ -110,7 +125,7 @@ export const Header = ({ userId }: Props) => {
               />
             </span>
             {isDropdownOpen && (
-              <ul className="absolute top-[45px] right-[10px] w-[100px] mt-2 bg-white rounded-md shadow-2xl">
+              <ul className="absolute top-[45px] right-[-20px] w-[120px] mt-2 bg-white rounded-md shadow-2xl">
                 {navItemsWithPages.map((item) => (
                   <li
                     key={item.label}
@@ -119,6 +134,11 @@ export const Header = ({ userId }: Props) => {
                     <Link href={item.href}>{item.label}</Link>
                   </li>
                 ))}
+                {role !== null && role === "ADMIN" && (
+                  <li className="px-4 py-2 hover:bg-gray-100 text-[14px]">
+                    <Link href={`/dashboard`}>Dashboard</Link>
+                  </li>
+                )}
               </ul>
             )}
           </li>
@@ -131,12 +151,13 @@ export const Header = ({ userId }: Props) => {
               ""
             )}
           </li>
+
           <li>
             <Link
-              href={`${userId ? "/appointment" : "/sign-in"}`}
+              href={`/sign-in`}
               className="inline-block rounded-[60px] border border-[#009ace] bg-[#009ace] transition-all duration-300 hover:bg-transparent hover:text-black px-[24px] py-[14px] text-white"
             >
-              Make Appointment
+              Log In
             </Link>
           </li>
         </ul>

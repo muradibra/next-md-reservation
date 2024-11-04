@@ -46,9 +46,9 @@ model TimeSlot {
 
 model Reservation {
   id       String  @id @default(cuid())
-  userId   String  @unique
-  doctorId String  @unique
-  slotId   String  @unique // Link to specific time slot
+  userId   String
+  doctorId String
+  slotId   String  @unique // Unique constraint remains because each slot can only be reserved once
   status   String // 'pending', 'confirmed', 'cancelled'
   message  String?
 
@@ -58,6 +58,8 @@ model Reservation {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@unique([userId, doctorId, slotId]) // Ensure a user cannot book the same slot for the same doctor multiple times
 }
 
 model Review {

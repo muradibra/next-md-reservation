@@ -5,10 +5,10 @@ import { ServicesSection } from "./_components/ServicesSection";
 import { BookAppointment } from "./_components/BookAppointment";
 import { getAvailableDates } from "@/actions/dates";
 import { getDoctors } from "@/actions/doctor";
-import { getCurrentUser } from "@/actions/user";
+import { getCurrentUserFromClerk } from "@/actions/user";
 
 const HomePage = async () => {
-  const { userId } = await getCurrentUser();
+  const { userId } = await getCurrentUserFromClerk();
   const doctors = await getDoctors();
 
   return (

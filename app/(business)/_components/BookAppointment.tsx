@@ -86,6 +86,13 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
     };
 
     const res = await createReservation(obj);
+
+    if (res.ok) {
+      toast.success(res.message);
+    } else {
+      toast.error(res.message);
+    }
+
     // console.log({ ...values, timeslotId: selectedTimeSlotId });
   }
 
@@ -97,8 +104,8 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
       className="py-[60px] sm:py-[80px] md:py-[100px] lg:py-[150px]"
     >
       <div className="w-container">
-        <div className="book-appointment-section-inner flex flex-col gap-y-[30px]">
-          <div className="flex flex-col gap-y-[20px]">
+        <div className="book-appointment-section-inner flex flex-col gap-y-[30px] md:flex-row md:items-center md:justify-between">
+          <div className="flex flex-col gap-y-[20px] md:w-[40%]">
             <div className="book-appointment-section__header">
               <div className="flex flex-col">
                 <div className="flex items-center gap-[10px]">
@@ -124,7 +131,7 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
                     name="doctor"
                     render={() => (
                       <FormItem>
-                        <FormLabel>Doctor</FormLabel>
+                        <FormLabel className="md:text-[20px]">Doctor</FormLabel>
                         <FormControl>
                           {/* <Input placeholder="shadcn" {...field} /> */}
                           <Select
@@ -154,7 +161,9 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
                     name="date"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="block">Date</FormLabel>
+                        <FormLabel className="block md:text-[20px]">
+                          Date
+                        </FormLabel>
                         <FormControl>
                           {/* <Input placeholder="shadcn" {...field} /> */}
                           <DateTimePicker
@@ -175,7 +184,9 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
                     name="message"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Doctor</FormLabel>
+                        <FormLabel className="md:text-[20px]">
+                          Message
+                        </FormLabel>
                         <FormControl>
                           <Textarea placeholder="Your message..." {...field} />
                         </FormControl>
@@ -194,15 +205,44 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
               {/* <div className="doctor-selection"></div> */}
             </div>
           </div>
-          <div className="opening-and-closing-times bg-book-img w-full  ">
-            <div className="flex flex-col gap-[10px]">
-              <h3>Opening & Closing Times</h3>
-              <p>
+          <div
+            className="opening-and-closing-times rounded-xl w-full p-[15px] gap-[90px] sm:p-[30px] lg:py-[30px] lg:px-[40px] md:w-[55%] bg-slate-500 flex flex-col justify-between "
+            style={{
+              backgroundImage: `url(${"/app/assets/images/book-image.jpg"})`,
+              backgroundSize: "cover",
+            }}
+          >
+            <div className="flex flex-col gap-[10px] text-white">
+              <h3 className="text-[20px] lg:text-[24px] ">
+                Opening & Closing Times
+              </h3>
+              <p className="text-[18px] ">
                 We strive to make healthcare accessible and convenient for you
               </p>
             </div>
 
-            <div className="bg-[#ffffffb3] backdrop-blur-[10px] w-[100px] h-[100px]"></div>
+            <div className="bg-gray-300 bg-opacity-60 rounded-xl p-[15px] backdrop-blur-xl flex flex-col gap-3">
+              <div className="flex justify-center gap-3">
+                <div className="days ">
+                  <ul>
+                    <li>Monday-Friday</li>
+                    <li>Saturday</li>
+                    <li>Sunday</li>
+                  </ul>
+                </div>
+                <div className="hours">
+                  <ul>
+                    <li>9AM-5PM</li>
+                    <li>9AM-5PM</li>
+                    <li>9AM-5PM</li>
+                  </ul>
+                </div>
+              </div>
+
+              <Button className="bg-[#029ace] rounded-3xl">
+                Call +1 (123) 456-7890
+              </Button>
+            </div>
           </div>
         </div>
       </div>
