@@ -1,6 +1,8 @@
+"use server";
+
 import { auth } from "@clerk/nextjs/server";
 
-export function getCurrentUser() {
+export async function getCurrentUser() {
   const user = auth();
   return user;
 }

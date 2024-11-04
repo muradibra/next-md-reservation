@@ -46,8 +46,8 @@ model TimeSlot {
 
 model Reservation {
   id       String  @id @default(cuid())
-  userId   String
-  doctorId String
+  userId   String  @unique
+  doctorId String  @unique
   slotId   String  @unique // Link to specific time slot
   status   String // 'pending', 'confirmed', 'cancelled'
   message  String?
