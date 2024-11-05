@@ -1,10 +1,11 @@
-import { getCurrentUserFromClerk, getCurrentUserFromDb } from "@/actions/user";
-import { redirect } from "next/navigation";
 import React from "react";
-import { UserTable } from "./_components/UserTable";
 import prisma from "@/lib/prisma";
+import { redirect } from "next/navigation";
+import { getCurrentUserFromClerk, getCurrentUserFromDb } from "@/actions/user";
+import { UserTable } from "./_components/UserTable";
 import { ReservationsTable } from "./_components/ReservationsTable";
-import { revalidatePath } from "next/cache";
+import { TimeSlotTable } from "./_components/TimeSlotTable";
+import { TimeSlotDialog } from "./_components/TimeSlotDialog";
 
 const DashboardPage = async () => {
   const { userId } = await getCurrentUserFromClerk();
@@ -29,23 +30,11 @@ const DashboardPage = async () => {
       timeSlot: true,
     },
   });
-
-  const updateStatus = async (reservationId: string, status: string) => {
-    await prisma.reservation.update({
-      where: {
-        id: reservationId,
-      },
-      data: {
-        status,
-      },
-    });
-
-    revalidatePath("/");
-    return {
-      ok: true,
-      status: 200,
-    };
-  };
+  const timeSlots = await prisma.timeSlot.findMany({
+    include: {
+      doctor: true,
+    },
+  });
 
   return (
     <div>
@@ -59,10 +48,17 @@ const DashboardPage = async () => {
       <div className="py-[30px] sm:py-[50px] md:py-[70px] lg:py-[90px]">
         <div className="w-container">
           <h1 className="text-2xl mb-3">Reservations</h1>
-          <ReservationsTable
-            reservations={reservations}
-            updateStatus={updateStatus}
-          />
+          <ReservationsTable reservations={reservations} />
+        </div>
+      </div>
+
+      <div className="py-[30px] sm:py-[50px] md:py-[70px] lg:py-[90px]">
+        <div className="w-container">
+          <div className="flex justify-between items-center mb-3">
+            <h1 className="text-2xl mb-3">Time Slots</h1>
+            <TimeSlotDialog type="CREATE" />
+          </div>
+          <TimeSlotTable timeSlots={timeSlots} />
         </div>
       </div>
     </div>

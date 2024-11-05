@@ -48,18 +48,18 @@ model Reservation {
   id       String  @id @default(cuid())
   userId   String
   doctorId String
-  slotId   String  @unique // Unique constraint remains because each slot can only be reserved once
+  slotId   String  @unique // Each slot can only be reserved once
   status   String // 'pending', 'confirmed', 'cancelled'
   message  String?
 
   user     User     @relation(fields: [userId], references: [id])
   doctor   Doctor   @relation(fields: [doctorId], references: [id])
-  timeSlot TimeSlot @relation(fields: [slotId], references: [id])
+  timeSlot TimeSlot @relation(fields: [slotId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([userId, doctorId, slotId]) // Ensure a user cannot book the same slot for the same doctor multiple times
+  @@unique([userId, doctorId, slotId])
 }
 
 model Review {

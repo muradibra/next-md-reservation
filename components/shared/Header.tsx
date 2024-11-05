@@ -153,12 +153,14 @@ export const Header = ({ userId, role }: Props) => {
           </li>
 
           <li>
-            <Link
-              href={`/sign-in`}
-              className="inline-block rounded-[60px] border border-[#009ace] bg-[#009ace] transition-all duration-300 hover:bg-transparent hover:text-black px-[24px] py-[14px] text-white"
-            >
-              Log In
-            </Link>
+            {!userId && (
+              <Link
+                href={`/sign-in`}
+                className="inline-block rounded-[60px] border border-[#009ace] bg-[#009ace] transition-all duration-300 hover:bg-transparent hover:text-black px-[24px] py-[14px] text-white"
+              >
+                Log In
+              </Link>
+            )}
           </li>
         </ul>
       </nav>

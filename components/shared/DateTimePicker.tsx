@@ -29,9 +29,11 @@ const DateTimePicker = ({
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTime, setSelectedTime] = useState<string>("");
-  const [date, setDate] = useState(null);
+  const [date, setDate] = useState<Date | null>(null);
   const [availableDates, setAvailableDates] = useState({});
-  const [availableHours, setAvailableHours] = useState([]);
+  const [availableHours, setAvailableHours] = useState<
+    { hour: number; id: string }[]
+  >([]);
 
   const toggleModal = () => {
     if (!selectedDoctor) return;
@@ -44,15 +46,15 @@ const DateTimePicker = ({
     setSelectedTimeSlotId(id); // Save the selected timeslot ID
   };
 
-  const handleDateChange = (value) => {
+  const handleDateChange = (value: Date) => {
     setDate(value);
     const dateKey = value.toISOString().split("T")[0];
     const availableSlots = availableDates[dateKey] || [];
 
-    setAvailableHours(availableSlots.map((hour) => hour));
+    setAvailableHours(availableSlots.map((hour: any) => hour));
   };
 
-  const isTileDisabled = ({ date }) => {
+  const isTileDisabled = ({ date }: { date: Date }) => {
     const dateKey = date.toISOString().split("T")[0];
     return !availableDates[dateKey]; // disable dates without availability
   };
@@ -60,6 +62,8 @@ const DateTimePicker = ({
   useEffect(() => {
     if (selectedDoctor) {
       getAvailableDates(selectedDoctor).then(setAvailableDates);
+    } else {
+      setAvailableDates({});
     }
   }, [selectedDoctor]);
 

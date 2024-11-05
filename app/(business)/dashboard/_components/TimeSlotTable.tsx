@@ -17,35 +17,43 @@ import Swal from "sweetalert2";
 import { Pencil2Icon } from "@radix-ui/react-icons";
 import { ReservationDialog } from "./ReservationDialog";
 import { cn } from "@/lib/utils";
+import { deleteTimeSlot } from "@/actions/timeSlot";
 
 type Props = {
-  reservations: (Reservation & {
-    user: User;
-
+  timeSlots: (TimeSlot & {
     doctor: Doctor;
-
-    timeSlot: TimeSlot;
   })[];
+  // reservations: (Reservation & {
+  //   user: User;
+
+  //   doctor: Doctor;
+
+  //   timeSlot: TimeSlot;
+  // })[];
   // updateStatus: (
   //   reservationId: string,
   //   status: string
   // ) => Promise<{ ok: boolean; status: number }>;
 };
 
-export const ReservationsTable = ({ reservations }: Props) => {
-  console.log(reservations);
+export const TimeSlotTable = ({ timeSlots }: Props) => {
+  console.log(timeSlots);
 
-  // Swal.fire({
-  //   title: "Are you sure?",
-  //   showCancelButton: true,
-  //   confirmButtonText: "Delete",
-  //   denyButtonText: `Don't save`,
-  // }).then((result) => {
-  //   /* Read more about isConfirmed, isDenied below */
-  //   if (result.isConfirmed) {
-  //     Swal.fire("User deleted!", "", "success");
-  //   }
-  // });
+  const handleTimeSlotDelete = async (slotId: string) => {
+    Swal.fire({
+      title: "Are you sure?",
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+      denyButtonText: `Don't save`,
+    }).then(async (result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        await deleteTimeSlot(slotId);
+
+        Swal.fire("User deleted!", "", "success");
+      }
+    });
+  };
 
   return (
     <Table>
@@ -55,56 +63,40 @@ export const ReservationsTable = ({ reservations }: Props) => {
             className="text-center"
             //  className="w-[100px]"
           >
-            For
+            Date
           </TableHead>
           <TableHead className="text-center">Doctor</TableHead>
           <TableHead className="text-center">Doctor Department</TableHead>
-          <TableHead className="text-center">Date</TableHead>
-          <TableHead
-            className="text-center"
-            //  className="text-right"
-          >
-            Status
-          </TableHead>
+          <TableHead className="text-center">Available</TableHead>
           <TableHead className="text-center"></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {reservations.map((reservation) => (
-          <TableRow key={reservation.id}>
+        {timeSlots.map((slot) => (
+          <TableRow key={slot.id}>
             <TableCell className="font-medium text-center">
-              {reservation.user.name}
+              {moment(slot.date).format("MMM Do YY")} {slot.hour}:00
+              {/* {reservation.user.name} */}
             </TableCell>
             <TableCell className="text-center">
-              {reservation.doctor.firstName} {reservation.doctor.lastName}
+              {slot.doctor.firstName} {slot.doctor.lastName}
             </TableCell>
             <TableCell className="text-center">
-              {reservation.doctor.specialty}
+              {slot.doctor.specialty}
+            </TableCell>
+            <TableCell className={"text-center"}>
+              {JSON.stringify(slot.available)}
             </TableCell>
             <TableCell className="text-center">
-              {moment(reservation.timeSlot.date).format("MMM Do YY")}{" "}
-              {reservation.timeSlot.hour}:00
+              {/* <ReservationDialog reservationId={reservation.id} /> */}
+              <Button
+                onClick={() => handleTimeSlotDelete(slot.id)}
+                variant={"destructive"}
+                size={"icon"}
+              >
+                <Trash2Icon className="w-5 h-5" />
+              </Button>
             </TableCell>
-            <TableCell
-              className={cn(
-                "text-center",
-                reservation.status === "confirmed"
-                  ? "text-green-500"
-                  : reservation.status === "cancelled"
-                  ? "text-red-600"
-                  : "text-yellow-500"
-              )}
-            >
-              {reservation.status}
-            </TableCell>
-            <TableCell className="text-center">
-              <ReservationDialog reservationId={reservation.id} />
-            </TableCell>
-            {/* <TableCell>{user.email}</TableCell>
-            <TableCell className="text-center">
-              {user?.reservations.length}
-            </TableCell>
-            <TableCell className="text-center">{user.reviews.length}</TableCell> */}
           </TableRow>
         ))}
       </TableBody>

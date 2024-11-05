@@ -78,6 +78,8 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
       return;
     }
 
+    console.log("---values---", values);
+
     const obj = {
       ...values,
       timeSlotId: selectedTimeSlotId,
@@ -195,7 +197,7 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
                     )}
                   />
                   <Button
-                    className="w-full py-[14px] text-[16px] px-[24px] bg-[#009ace] rounded-[60px] font-medium"
+                    className="w-full px-[14px] py-[24px] text-[16px] bg-[#009ace] rounded-[60px] font-medium"
                     type="submit"
                   >
                     Book Appointment

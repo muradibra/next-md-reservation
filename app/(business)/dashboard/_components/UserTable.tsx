@@ -42,17 +42,17 @@ export const UserTable = ({ users }: Props) => {
           >
             Name
           </TableHead>
-          <TableHead>Email</TableHead>
-          <TableHead>Reservation Count</TableHead>
-          <TableHead>Review Count</TableHead>
-          <TableHead className="text-right"></TableHead>
+          <TableHead className="text-center">Email</TableHead>
+          <TableHead className="text-center">Reservation Count</TableHead>
+          <TableHead className="text-center">Review Count</TableHead>
+          <TableHead className="text-center"></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {usersWithoutAdminUser.map((user) => (
           <TableRow key={user.id}>
             <TableCell className="font-medium">{user.name}</TableCell>
-            <TableCell>{user.email}</TableCell>
+            <TableCell className="text-center">{user.email}</TableCell>
             <TableCell className="text-center">
               {user?.reservations.length}
             </TableCell>

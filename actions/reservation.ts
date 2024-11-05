@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { Reservation } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 
 type ReservationValues = {
   doctor: string;
@@ -11,18 +12,17 @@ type ReservationValues = {
   status: "pending" | "confirmed" | "cancelled";
 };
 
-type Props = {
-  values: ReservationValues[];
-};
-
-export async function createReservation({ values }: Props) {
+export async function createReservation(obj: ReservationValues[]) {
   try {
     const userExists = await prisma.user.findUnique({
-      where: { externalId: values[0].userId },
+      where: { externalId: obj.userId },
     });
+
+    // console.log(obj);
+
     // console.log("----userExists----", userExists);
 
-    const { doctor, timeSlotId, message, status } = values[0];
+    const { doctor, timeSlotId, message, status } = obj;
     const res = await prisma.reservation.create({
       data: {
         userId: userExists?.id!,
@@ -32,7 +32,19 @@ export async function createReservation({ values }: Props) {
         message,
       },
     });
+
+    await prisma.timeSlot.update({
+      where: {
+        id: timeSlotId,
+      },
+      data: {
+        available: false,
+      },
+    });
+
     console.log("----res----", res);
+
+    revalidatePath("/");
 
     return {
       ok: true,
@@ -40,6 +52,8 @@ export async function createReservation({ values }: Props) {
       message: "Reservation created",
     };
   } catch (err) {
+    console.log("------reservation error------", err);
+
     return {
       ok: false,
       status: 500,
@@ -47,3 +61,53 @@ export async function createReservation({ values }: Props) {
     };
   }
 }
+
+export async function updateStatus(reservationId: string, status: string) {
+  try {
+    await prisma.reservation.update({
+      where: {
+        id: reservationId,
+      },
+      data: {
+        status,
+      },
+    });
+
+    revalidatePath("/");
+    return {
+      ok: true,
+      status: 200,
+    };
+  } catch (err) {
+    return {
+      ok: false,
+      error: 500,
+    };
+  }
+}
+
+// export async function getUniqueReservation(slotId: string) {
+//   try {
+//     const reservation = await prisma.reservation.findFirst({
+//       where: {
+//         slotId,
+//       },
+//       include: {
+//         timeSlot: true,
+//         user: true,
+//         doctor: true,
+//       },
+//     });
+
+//     return {
+//       ok: true,
+//       status: 200,
+//       reservation,
+//     };
+//   } catch (err) {
+//     return {
+//       ok: false,
+//       status: 500,
+//     };
+//   }
+// }

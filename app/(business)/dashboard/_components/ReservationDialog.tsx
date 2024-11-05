@@ -20,24 +20,33 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Pencil2Icon } from "@radix-ui/react-icons";
+import { updateStatus } from "@/actions/reservation";
+import { toast } from "sonner";
 
 type Props = {
-  updateStatus: (
-    reservationId: string,
-    status: string
-  ) => Promise<{ ok: boolean; status: number }>;
+  reservationId: string;
+  // updateStatus: (
+  //   reservationId: string,
+  //   status: string
+  // ) => Promise<{ ok: boolean; status: number }>;
 };
 
-export const ReservationDialog = ({ updateStatus }: Props) => {
+export const ReservationDialog = ({ reservationId }: Props) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectValue, setSelectValue] = useState<
     "confirmed" | "cancelled" | null
   >(null);
 
-  const statusUpdate = () => {
+  const statusUpdate = async () => {
     setIsLoading(true);
-
+    const resp = await updateStatus(reservationId, selectValue!);
+    if (resp.ok) {
+      toast.success("Reservation status updated");
+      setIsDialogOpen(false);
+    } else {
+      toast.error("Error occurred while updating status");
+    }
     setIsLoading(false);
   };
 
@@ -68,7 +77,9 @@ export const ReservationDialog = ({ updateStatus }: Props) => {
           </SelectContent>
         </Select>
 
-        <Button>Save</Button>
+        <Button disabled={isLoading} onClick={statusUpdate}>
+          Save
+        </Button>
       </DialogContent>
     </Dialog>
   );
