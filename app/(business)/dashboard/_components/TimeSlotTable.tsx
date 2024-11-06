@@ -50,7 +50,7 @@ export const TimeSlotTable = ({ timeSlots }: Props) => {
       if (result.isConfirmed) {
         await deleteTimeSlot(slotId);
 
-        Swal.fire("User deleted!", "", "success");
+        Swal.fire("Timeslot and its reservations deleted!", "", "success");
       }
     });
   };

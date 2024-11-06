@@ -13,6 +13,7 @@ import { Reservation, Review, User } from "@prisma/client";
 import { PencilIcon, Trash2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Swal from "sweetalert2";
+import { deleteUserFromDbAndClerk } from "@/actions/user";
 
 type Props = {
   users: (User & { reservations: Reservation[]; reviews: Review[] })[];
@@ -21,17 +22,26 @@ type Props = {
 export const UserTable = ({ users }: Props) => {
   const usersWithoutAdminUser = users.filter((user) => user.role !== "ADMIN");
 
-  // Swal.fire({
-  //   title: "Are you sure?",
-  //   showCancelButton: true,
-  //   confirmButtonText: "Delete",
-  //   denyButtonText: `Don't save`,
-  // }).then((result) => {
-  //   /* Read more about isConfirmed, isDenied below */
-  //   if (result.isConfirmed) {
-  //     Swal.fire("User deleted!", "", "success");
-  //   }
-  // });
+  const deleteUser = (externalId: string, prismaId: string) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete user!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteUserFromDbAndClerk(externalId, prismaId);
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+      }
+    });
+  };
 
   return (
     <Table>
@@ -57,14 +67,14 @@ export const UserTable = ({ users }: Props) => {
               {user?.reservations.length}
             </TableCell>
             <TableCell className="text-center">{user.reviews.length}</TableCell>
-            {/* <TableCell className="flex gap-3 items-center">
-              <Button variant={"destructive"} onClick={deleteUser}>
+            <TableCell className="flex gap-3 items-center">
+              <Button
+                variant={"destructive"}
+                onClick={() => deleteUser(user.externalId, user.id)}
+              >
                 <Trash2Icon className="w-5 h-5 " />
               </Button>
-              <Button variant={"secondary"}>
-                <PencilIcon className="w-5 h-5 cursor-pointer" />
-              </Button>
-            </TableCell> */}
+            </TableCell>
           </TableRow>
         ))}
       </TableBody>

@@ -3,7 +3,6 @@ import { HomeHero } from "./_components/HomeHero";
 import { AboutUsSection } from "./_components/AboutUsSection";
 import { ServicesSection } from "./_components/ServicesSection";
 import { BookAppointment } from "./_components/BookAppointment";
-import { getAvailableDates } from "@/actions/dates";
 import { getDoctors } from "@/actions/doctor";
 import { getCurrentUserFromClerk } from "@/actions/user";
 

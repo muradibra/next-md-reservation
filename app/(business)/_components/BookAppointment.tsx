@@ -47,6 +47,8 @@ type Props = {
 };
 
 export const BookAppointment = ({ doctors, userId }: Props) => {
+  console.log("doctors", doctors);
+
   const router = useRouter();
   const [selectedTimeSlotId, setSelectedTimeSlotId] = useState<string | null>(
     null
@@ -62,6 +64,8 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
   });
 
   const setDateAndTime = (date: any, time: number) => {
+    console.log("date", date);
+
     form.setValue("date", JSON.stringify(date));
     form.setValue("hour", time);
   };
@@ -91,6 +95,7 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
 
     if (res.ok) {
       toast.success(res.message);
+      form.reset();
     } else {
       toast.error(res.message);
     }
@@ -98,7 +103,7 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
     // console.log({ ...values, timeslotId: selectedTimeSlotId });
   }
 
-  console.log(form.formState.errors);
+  // console.log(form.formState.errors);
 
   return (
     <section
@@ -142,13 +147,14 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
                               setSelectedDoctor(value);
                             }}
                           >
-                            <SelectTrigger className="">
+                            <SelectTrigger>
                               <SelectValue placeholder="Please select a doctor" />
                             </SelectTrigger>
                             <SelectContent>
                               {doctors.map((doctor) => (
                                 <SelectItem key={doctor.id} value={doctor.id}>
-                                  {doctor.firstName} {doctor.lastName}
+                                  {doctor.firstName} {doctor.lastName},{" "}
+                                  {doctor.specialty}
                                 </SelectItem>
                               ))}
                             </SelectContent>
@@ -169,7 +175,6 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
                         <FormControl>
                           {/* <Input placeholder="shadcn" {...field} /> */}
                           <DateTimePicker
-                            //  form={form}
                             selectedDoctor={selectedDoctor}
                             setDateAndTime={setDateAndTime}
                             resetDateAndTime={resetDateAndTime}

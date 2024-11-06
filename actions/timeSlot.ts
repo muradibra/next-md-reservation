@@ -3,6 +3,15 @@
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
+type CreateTimeSlotProps = {
+  values: {
+    hour: number;
+    doctor: string;
+    date: string;
+    availability: boolean;
+  };
+};
+
 export async function deleteTimeSlot(slotId: string) {
   try {
     await prisma.timeSlot.delete({
@@ -21,6 +30,36 @@ export async function deleteTimeSlot(slotId: string) {
     return {
       ok: false,
       status: 500,
+    };
+  }
+}
+
+export async function createTimeSlot({ values }: CreateTimeSlotProps) {
+  try {
+    const { availability, date, doctor, hour } = values;
+
+    // Store the date as a local date string
+    const formattedDate = new Date(date).toISOString();
+
+    await prisma.timeSlot.create({
+      data: {
+        date: formattedDate,
+        hour,
+        available: availability,
+        doctorId: doctor,
+      },
+    });
+    revalidatePath("/");
+    return {
+      ok: true,
+      status: 200,
+      message: "Timeslot created successfully",
+    };
+  } catch (err: any) {
+    return {
+      ok: false,
+      status: 500,
+      message: err.message,
     };
   }
 }

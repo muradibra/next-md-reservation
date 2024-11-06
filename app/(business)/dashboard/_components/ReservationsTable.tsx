@@ -57,6 +57,7 @@ export const ReservationsTable = ({ reservations }: Props) => {
           >
             For
           </TableHead>
+          <TableHead className="text-center">Email</TableHead>
           <TableHead className="text-center">Doctor</TableHead>
           <TableHead className="text-center">Doctor Department</TableHead>
           <TableHead className="text-center">Date</TableHead>
@@ -74,6 +75,9 @@ export const ReservationsTable = ({ reservations }: Props) => {
           <TableRow key={reservation.id}>
             <TableCell className="font-medium text-center">
               {reservation.user.name}
+            </TableCell>
+            <TableCell className="font-medium text-center">
+              {reservation.user.email}
             </TableCell>
             <TableCell className="text-center">
               {reservation.doctor.firstName} {reservation.doctor.lastName}

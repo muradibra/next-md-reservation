@@ -35,19 +35,20 @@ const DashboardPage = async () => {
       doctor: true,
     },
   });
+  const doctors = await prisma.doctor.findMany();
 
   return (
     <div>
       <div className="py-[30px] sm:py-[50px] md:py-[70px] lg:py-[90px]">
         <div className="w-container">
-          <h1 className="text-2xl mb-3">Users</h1>
+          <h1 className="text-3xl mb-3 font-bold">Users</h1>
           <UserTable users={users} />
         </div>
       </div>
 
       <div className="py-[30px] sm:py-[50px] md:py-[70px] lg:py-[90px]">
         <div className="w-container">
-          <h1 className="text-2xl mb-3">Reservations</h1>
+          <h1 className="text-3xl mb-3 font-bold">Reservations</h1>
           <ReservationsTable reservations={reservations} />
         </div>
       </div>
@@ -55,8 +56,8 @@ const DashboardPage = async () => {
       <div className="py-[30px] sm:py-[50px] md:py-[70px] lg:py-[90px]">
         <div className="w-container">
           <div className="flex justify-between items-center mb-3">
-            <h1 className="text-2xl mb-3">Time Slots</h1>
-            <TimeSlotDialog type="CREATE" />
+            <h1 className="text-3xl mb-3 font-bold">Time Slots</h1>
+            <TimeSlotDialog type="CREATE" doctors={doctors} />
           </div>
           <TimeSlotTable timeSlots={timeSlots} />
         </div>

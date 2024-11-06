@@ -30,7 +30,9 @@ const DateTimePicker = ({
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTime, setSelectedTime] = useState<string>("");
   const [date, setDate] = useState<Date | null>(null);
-  const [availableDates, setAvailableDates] = useState({});
+  const [availableDates, setAvailableDates] = useState<{
+    [key: string]: { hour: number; id: string }[];
+  }>({});
   const [availableHours, setAvailableHours] = useState<
     { hour: number; id: string }[]
   >([]);
@@ -42,8 +44,11 @@ const DateTimePicker = ({
   const closeModal = () => setIsOpen(false);
 
   const handleTimeSelection = (hour: number, id: string) => {
-    setSelectedTime(hour.toString()); // Save the selected time
-    setSelectedTimeSlotId(id); // Save the selected timeslot ID
+    setSelectedTime(hour.toString());
+    setSelectedTimeSlotId(id);
+    if (date) {
+      setDateAndTime(date, hour);
+    }
   };
 
   const handleDateChange = (value: Date) => {
@@ -105,7 +110,10 @@ const DateTimePicker = ({
                 </h3>
                 <button
                   type="button"
-                  onClick={closeModal}
+                  onClick={() => {
+                    resetDateAndTime();
+                    closeModal();
+                  }}
                   className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm h-8 w-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
                 >
                   <svg
@@ -131,7 +139,6 @@ const DateTimePicker = ({
                   <Calendar
                     onChange={handleDateChange}
                     value={date} // bind selected date to value
-                    minDate={new Date()}
                     tileDisabled={isTileDisabled}
                     // onClickDay={() =>
                     //   setDateAndTime(date, Number(selectedTime))

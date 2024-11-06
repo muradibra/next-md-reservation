@@ -2,6 +2,7 @@ import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import prisma from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 // import prisma from "@/lib/prisma";
 
 export async function POST(req: Request) {
@@ -85,11 +86,46 @@ export async function POST(req: Request) {
       case "user.deleted":
         console.log("Deleting user");
 
+        const reservations = await prisma.reservation.findMany({
+          where: { userId: id },
+        });
+
+        await prisma.reservation.deleteMany({
+          where: {
+            userId: id,
+          },
+        });
+
+        for (const reservation of reservations) {
+          await prisma.timeSlot.update({
+            where: { id: reservation.slotId },
+            data: { available: true },
+          });
+        }
+
+        await prisma.review.deleteMany({
+          where: {
+            userId: id,
+          },
+        });
+
         await prisma.user.delete({
           where: {
             externalId: id,
           },
         });
+
+        // await prisma.timeSlot.updateMany({
+        //   where: {
+        //     userId: id,
+        //   },
+        //   data: {
+        //     available: true,
+        //   },
+        // });
+
+        revalidatePath("/dashboard");
+
         break;
       case "user.updated":
         await prisma.user.update({

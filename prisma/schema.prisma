@@ -52,7 +52,7 @@ model Reservation {
   status   String // 'pending', 'confirmed', 'cancelled'
   message  String?
 
-  user     User     @relation(fields: [userId], references: [id])
+  user     User     @relation(fields: [userId], references: [externalId])
   doctor   Doctor   @relation(fields: [doctorId], references: [id])
   timeSlot TimeSlot @relation(fields: [slotId], references: [id], onDelete: Cascade)
 

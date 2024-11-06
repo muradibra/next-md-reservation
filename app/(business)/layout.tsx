@@ -6,11 +6,16 @@ import "sweetalert2/src/sweetalert2.scss";
 
 const BusinessLayout = async ({ children }: PropsWithChildren) => {
   const { userId } = await getCurrentUserFromClerk();
-  const { role } = await getCurrentUserFromDb(userId!);
+  const currentUser = userId ? await getCurrentUserFromDb(userId) : null;
 
   return (
     <div>
-      <Header userId={userId} role={role} />
+      <Header
+        userId={userId}
+        role={
+          typeof currentUser === "string" ? "USER" : currentUser?.role ?? "USER"
+        }
+      />
       {children}
       <Footer />
     </div>
