@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 import "react-calendar/dist/Calendar.css";
@@ -16,12 +15,12 @@ import { getAvailableDates } from "@/actions/dates";
 
 type Props = {
   selectedDoctor: string | null;
-  setDateAndTime: (date: any, time: number) => void;
+  setDateAndTime: (date: Date, time: number) => void;
   resetDateAndTime: () => void;
   setSelectedTimeSlotId: React.Dispatch<React.SetStateAction<string | null>>;
 };
 
-const DateTimePicker = ({
+export const DateTimePicker = ({
   selectedDoctor,
   setDateAndTime,
   resetDateAndTime,
@@ -51,12 +50,16 @@ const DateTimePicker = ({
     }
   };
 
-  const handleDateChange = (value: Date) => {
-    setDate(value);
-    const dateKey = value.toISOString().split("T")[0];
+  const handleDateChange = (value: Date | Date[]) => {
+    setDate(Array.isArray(value) ? value[0] : value);
+    const dateKey = (Array.isArray(value) ? value[0] : value)
+      .toISOString()
+      .split("T")[0];
     const availableSlots = availableDates[dateKey] || [];
 
-    setAvailableHours(availableSlots.map((hour: any) => hour));
+    setAvailableHours(
+      availableSlots.map((slot: { hour: number; id: string }) => slot)
+    );
   };
 
   const isTileDisabled = ({ date }: { date: Date }) => {
@@ -137,48 +140,18 @@ const DateTimePicker = ({
               <div className="p-4 pt-0">
                 <div className="mx-auto sm:mx-0 flex justify-center my-5 [&>div>div]:shadow-none [&>div>div]:bg-gray-50 [&_div>button]:bg-gray-50">
                   <Calendar
-                    onChange={handleDateChange}
+                    onChange={(value) => handleDateChange(value as Date)}
                     value={date} // bind selected date to value
                     tileDisabled={isTileDisabled}
                     // onClickDay={() =>
                     //   setDateAndTime(date, Number(selectedTime))
                     // }
                   />
-                  {/* <DatePicker
-                      selected={startDate}
-                      minDate={new Date()}
-                      value={date!}
-                      // inline
-                      // onSelect={handleDateSelect} //when day is clicked
-                      onChange={handleDateChange} //only when value has changed
-                    /> */}
                 </div>
                 <label className="text-sm font-medium text-gray-900 dark:text-white mb-2 block">
                   Pick your time
                 </label>
                 <ul className="grid w-full grid-cols-3 gap-2 mb-5">
-                  {/* {availableHours.map((time) => (
-                      <li key={time}>
-                        <input
-                          type="radio"
-                          // id={time.replace(" ", "-").toLowerCase()}
-                          value={time}
-                          className="hidden peer"
-                          name="timetable"
-                          checked={selectedTime === time}
-                          onClick={() => console.log("time", time)}
-                          // onChange={(e) => {
-                          //   console.log(e.target.value);
-                          // }}
-                        />
-                        <label
-                          // htmlFor={time.replace(" ", "-").toLowerCase()}
-                          className="inline-flex items-center justify-center w-full px-2 py-1 text-sm font-medium text-center hover:text-gray-900 dark:hover:text-white bg-white dark:bg-gray-800 border rounded-lg cursor-pointer text-gray-500 border-gray-200 dark:border-gray-700 dark:peer-checked:border-blue-500 peer-checked:border-blue-700 dark:hover:border-gray-600 dark:peer-checked:text-blue-500 peer-checked:bg-blue-50 peer-checked:text-blue-700 hover:bg-gray-50 dark:text-gray-400 dark:hover:bg-gray-600 dark:peer-checked:bg-blue-900"
-                        >
-                          {time}:00
-                        </label>
-                      </li>
-                    ))} */}
                   {availableHours.map((hour) => (
                     <button
                       key={hour.hour}
@@ -187,7 +160,6 @@ const DateTimePicker = ({
                       {hour.hour}:00
                     </button>
                   ))}
-                  {/* {availableHours.map((item) => console.log(item))} */}
                 </ul>
                 <div className="grid grid-cols-2 gap-2">
                   <Button
@@ -224,5 +196,3 @@ const DateTimePicker = ({
     </>
   );
 };
-
-export default DateTimePicker;

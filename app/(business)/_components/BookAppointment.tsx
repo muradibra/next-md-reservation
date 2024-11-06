@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import { Doctor } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import icon from "@/app/assets/icons/section-start.svg";
 
 import {
   Select,
@@ -26,9 +25,12 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import DateTimePicker from "@/components/shared/DateTimePicker";
+import { DateTimePicker } from "@/components/shared/DateTimePicker";
 import { Textarea } from "@/components/ui/textarea";
 import { createReservation } from "@/actions/reservation";
+import Image from "next/image";
+import icon from "@/app/assets/icons/section-start.svg";
+import { EStatusType } from "@/types";
 
 const formSchema = z.object({
   doctor: z.string().min(2, {
@@ -47,7 +49,7 @@ type Props = {
 };
 
 export const BookAppointment = ({ doctors, userId }: Props) => {
-  console.log("doctors", doctors);
+  // console.log("doctors", doctors);
 
   const router = useRouter();
   const [selectedTimeSlotId, setSelectedTimeSlotId] = useState<string | null>(
@@ -63,7 +65,7 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
     },
   });
 
-  const setDateAndTime = (date: any, time: number) => {
+  const setDateAndTime = (date: Date, time: number) => {
     console.log("date", date);
 
     form.setValue("date", JSON.stringify(date));
@@ -88,7 +90,7 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
       ...values,
       timeSlotId: selectedTimeSlotId,
       userId,
-      status: "pending",
+      status: EStatusType.PENDING,
     };
 
     const res = await createReservation(obj);
@@ -116,7 +118,7 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
             <div className="book-appointment-section__header">
               <div className="flex flex-col">
                 <div className="flex items-center gap-[10px]">
-                  <img src={icon.src} alt="" />
+                  <Image src={icon.src} alt="" layout="" />
                   <span>Schedule Now</span>
                 </div>
                 <div>
@@ -167,7 +169,7 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
                   <FormField
                     control={form.control}
                     name="date"
-                    render={({ field }) => (
+                    render={() => (
                       <FormItem>
                         <FormLabel className="block md:text-[20px]">
                           Date

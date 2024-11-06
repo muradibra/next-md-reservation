@@ -18,7 +18,7 @@ export const ServicesSection = () => {
           <div className="services-left flex flex-col gap-5 lg:gap-[40px] md:w-[48%] md:sticky md:top-[10%] md:h-[400px]">
             <div className="services-left__section-header ">
               <div className="flex gap-[10px] items-center">
-                <img src={sectionIcon.src} alt="Icon" />
+                <Image src={sectionIcon.src} alt="Icon" layout="" />
                 <span className="text-[#009ace] font-semibold leading-[120%]">
                   Our Services
                 </span>

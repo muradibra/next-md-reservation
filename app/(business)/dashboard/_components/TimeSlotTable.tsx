@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import moment from "moment";
 import {
   Table,
@@ -10,13 +10,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Doctor, Reservation, TimeSlot, User } from "@prisma/client";
-import { PencilIcon, Trash2Icon } from "lucide-react";
+import { Doctor, TimeSlot } from "@prisma/client";
+import { Trash2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Swal from "sweetalert2";
-import { Pencil2Icon } from "@radix-ui/react-icons";
-import { ReservationDialog } from "./ReservationDialog";
-import { cn } from "@/lib/utils";
 import { deleteTimeSlot } from "@/actions/timeSlot";
 
 type Props = {
@@ -59,12 +56,7 @@ export const TimeSlotTable = ({ timeSlots }: Props) => {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead
-            className="text-center"
-            //  className="w-[100px]"
-          >
-            Date
-          </TableHead>
+          <TableHead className="text-center">Date</TableHead>
           <TableHead className="text-center">Doctor</TableHead>
           <TableHead className="text-center">Doctor Department</TableHead>
           <TableHead className="text-center">Available</TableHead>
@@ -76,7 +68,6 @@ export const TimeSlotTable = ({ timeSlots }: Props) => {
           <TableRow key={slot.id}>
             <TableCell className="font-medium text-center">
               {moment(slot.date).format("MMM Do YY")} {slot.hour}:00
-              {/* {reservation.user.name} */}
             </TableCell>
             <TableCell className="text-center">
               {slot.doctor.firstName} {slot.doctor.lastName}

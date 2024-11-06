@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import moment from "moment";
 import {
   Table,
@@ -11,10 +11,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Doctor, Reservation, TimeSlot, User } from "@prisma/client";
-import { PencilIcon, Trash2Icon } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import Swal from "sweetalert2";
-import { Pencil2Icon } from "@radix-ui/react-icons";
 import { ReservationDialog } from "./ReservationDialog";
 import { cn } from "@/lib/utils";
 

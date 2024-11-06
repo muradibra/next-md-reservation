@@ -5,7 +5,6 @@ import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -66,10 +65,7 @@ export const TimeSlotDialog = ({ type, doctors }: Props) => {
     },
   });
 
-  // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     setIsLoading(true);
     // console.log(values);
 
@@ -114,11 +110,10 @@ export const TimeSlotDialog = ({ type, doctors }: Props) => {
             <FormField
               control={form.control}
               name="hour"
-              render={({ field }) => (
+              render={() => (
                 <FormItem>
                   <FormLabel>Hour</FormLabel>
                   <FormControl>
-                    {/* <Input placeholder="shadcn" {...field} /> */}
                     <Select
                       onValueChange={(value) =>
                         form.setValue("hour", Number(value))
@@ -129,7 +124,7 @@ export const TimeSlotDialog = ({ type, doctors }: Props) => {
                       </SelectTrigger>
                       <SelectContent>
                         {[9, 10, 11, 12, 13, 14, 15, 16, 17].map((hour) => (
-                          <SelectItem value={hour.toString()}>
+                          <SelectItem key={hour} value={hour.toString()}>
                             {hour}:00
                           </SelectItem>
                         ))}
@@ -144,11 +139,10 @@ export const TimeSlotDialog = ({ type, doctors }: Props) => {
             <FormField
               control={form.control}
               name="doctor"
-              render={({ field }) => (
+              render={() => (
                 <FormItem>
                   <FormLabel>Doctor</FormLabel>
                   <FormControl>
-                    {/* <Input placeholder="shadcn" {...field} /> */}
                     <Select
                       onValueChange={(value) => form.setValue("doctor", value)}
                     >
@@ -157,7 +151,7 @@ export const TimeSlotDialog = ({ type, doctors }: Props) => {
                       </SelectTrigger>
                       <SelectContent>
                         {doctors.map((doctor) => (
-                          <SelectItem value={doctor.id}>
+                          <SelectItem key={doctor.id} value={doctor.id}>
                             {doctor.firstName} {doctor.lastName},{" "}
                             {doctor.specialty}
                           </SelectItem>
@@ -173,11 +167,10 @@ export const TimeSlotDialog = ({ type, doctors }: Props) => {
             <FormField
               control={form.control}
               name="availability"
-              render={({ field }) => (
+              render={() => (
                 <FormItem>
                   <FormLabel>Availablitiy</FormLabel>
                   <FormControl>
-                    {/* <Input placeholder="shadcn" {...field} /> */}
                     <Select
                       onValueChange={(value) =>
                         form.setValue("availability", Boolean(value))
@@ -196,7 +189,7 @@ export const TimeSlotDialog = ({ type, doctors }: Props) => {
                 </FormItem>
               )}
             />
-            <Button className="w-full" type="submit">
+            <Button disabled={isLoading} className="w-full" type="submit">
               Submit
             </Button>
           </form>

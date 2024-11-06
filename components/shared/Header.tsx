@@ -2,12 +2,11 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { AlignJustify, ChevronDown, User, XIcon } from "lucide-react";
+import { AlignJustify, ChevronDown, XIcon } from "lucide-react";
 import { navItems } from "@/constants";
 import Link from "next/link";
 import logo from "@/app/assets/images/logo.svg";
 import { ClerkLoaded, ClerkLoading, UserButton } from "@clerk/nextjs";
-import { getCurrentUserFromDb } from "@/actions/user";
 import { Spinner } from "./Spinner";
 
 type Props = {

@@ -1,14 +1,15 @@
 "use server";
 
 import prisma from "@/lib/prisma";
+import { EStatusType } from "@/types";
 import { revalidatePath } from "next/cache";
 
 type ReservationValues = {
   doctor: string;
-  timeSlotId: string;
+  timeSlotId: string | null;
   userId: string;
   message?: string;
-  status: "pending" | "confirmed" | "cancelled";
+  status: EStatusType;
 };
 
 export async function createReservation(obj: ReservationValues) {
@@ -40,7 +41,7 @@ export async function createReservation(obj: ReservationValues) {
 
     await prisma.timeSlot.update({
       where: {
-        id: timeSlotId,
+        id: timeSlotId!,
       },
       data: {
         available: false,

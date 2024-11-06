@@ -19,7 +19,7 @@ export const AboutUsSection = () => {
           <div className="section-data flex flex-col gap-y-[20px] lg:gap-y-[40px] md:w-[46%]">
             <div className="section-header ">
               <div className="flex gap-[10px]">
-                <img src={sectionIcon.src} alt="Icon" />
+                <Image src={sectionIcon.src} alt="Icon" layout="" />
                 <span className="text-[#009ace] font-semibold leading-[120%]">
                   About Us
                 </span>

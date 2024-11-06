@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Reservation, Review, User } from "@prisma/client";
-import { PencilIcon, Trash2Icon } from "lucide-react";
+import { Trash2Icon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Swal from "sweetalert2";
 import { deleteUserFromDbAndClerk } from "@/actions/user";
@@ -22,7 +22,7 @@ type Props = {
 export const UserTable = ({ users }: Props) => {
   const usersWithoutAdminUser = users.filter((user) => user.role !== "ADMIN");
 
-  const deleteUser = (externalId: string, prismaId: string) => {
+  const deleteUser = (externalId: string) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -33,7 +33,7 @@ export const UserTable = ({ users }: Props) => {
       confirmButtonText: "Yes, delete user!",
     }).then((result) => {
       if (result.isConfirmed) {
-        deleteUserFromDbAndClerk(externalId, prismaId);
+        deleteUserFromDbAndClerk(externalId);
         Swal.fire({
           title: "Deleted!",
           text: "Your file has been deleted.",
@@ -47,11 +47,7 @@ export const UserTable = ({ users }: Props) => {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead
-          //  className="w-[100px]"
-          >
-            Name
-          </TableHead>
+          <TableHead>Name</TableHead>
           <TableHead className="text-center">Email</TableHead>
           <TableHead className="text-center">Reservation Count</TableHead>
           <TableHead className="text-center">Review Count</TableHead>
@@ -70,7 +66,7 @@ export const UserTable = ({ users }: Props) => {
             <TableCell className="flex gap-3 items-center">
               <Button
                 variant={"destructive"}
-                onClick={() => deleteUser(user.externalId, user.id)}
+                onClick={() => deleteUser(user.externalId)}
               >
                 <Trash2Icon className="w-5 h-5 " />
               </Button>
