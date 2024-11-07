@@ -1,4 +1,3 @@
-import Image from "next/image";
 import React from "react";
 import mainImg from "@/app/assets/images/about-us.jpg";
 import sectionIcon from "@/app/assets/icons/section-start.svg";

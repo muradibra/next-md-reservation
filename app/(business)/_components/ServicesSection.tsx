@@ -1,5 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
 import sectionIcon from "@/app/assets/icons/section-start.svg";
 import service1 from "@/app/assets/images/services-thumb01.jpg";
 import service2 from "@/app/assets/images/services-thumb02.jpg";

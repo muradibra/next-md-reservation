@@ -1,6 +1,5 @@
 import React from "react";
 import HeroImg from "@/app/assets/images/hero.png";
-import Image from "next/image";
 import Link from "next/link";
 
 export const HomeHero = () => {
