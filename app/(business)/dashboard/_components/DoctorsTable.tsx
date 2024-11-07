@@ -1,7 +1,6 @@
 "use client";
 
 import React from "react";
-import moment from "moment";
 import {
   Table,
   TableBody,
@@ -10,24 +9,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Doctor, Reservation, TimeSlot, User } from "@prisma/client";
-import { ReservationDialog } from "./ReservationDialog";
-import { cn } from "@/lib/utils";
-import { EStatusType } from "@/types";
+import { Doctor as PrismaDoctor, Review, Reservation } from "@prisma/client";
 
-type Props = {
-  reservations: (Reservation & {
-    user: User;
-
-    doctor: Doctor;
-
-    timeSlot: TimeSlot;
-  })[];
+type Doctor = PrismaDoctor & {
+  reviews: Review[];
+  reservations: Reservation[];
 };
 
-export const ReservationsTable = ({ reservations }: Props) => {
-  console.log(reservations);
+type Props = {
+  doctors: Doctor[];
+};
 
+export const DoctorsTable = ({ doctors }: Props) => {
   // Swal.fire({
   //   title: "Are you sure?",
   //   showCancelButton: true,
@@ -44,17 +37,31 @@ export const ReservationsTable = ({ reservations }: Props) => {
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="text-center">For</TableHead>
-          <TableHead className="text-center">Email</TableHead>
-          <TableHead className="text-center">Doctor</TableHead>
-          <TableHead className="text-center">Doctor Department</TableHead>
-          <TableHead className="text-center">Date</TableHead>
-          <TableHead className="text-center">Status</TableHead>
-          <TableHead className="text-center"></TableHead>
+          <TableHead className="text-center">Firstname</TableHead>
+          <TableHead className="text-center">Lastname</TableHead>
+          <TableHead className="text-center">Specialty</TableHead>
+          <TableHead className="text-center">Review Count</TableHead>
+          <TableHead className="text-center">Reservation Count</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        {reservations.map((reservation) => (
+        {doctors.map((doctor) => (
+          <TableRow key={doctor.id}>
+            <TableCell className="text-center">{doctor.firstName}</TableCell>
+            <TableCell className="text-center">{doctor.lastName}</TableCell>
+            <TableCell className="text-center">{doctor.specialty}</TableCell>
+            <TableCell className="text-center">
+              {doctor.reviews.length}
+            </TableCell>
+            <TableCell className="text-center">
+              {doctor.reservations.length}
+            </TableCell>
+            <TableCell className="text-center">
+              {/* <DoctorDialog type="UPDATE" /> */}
+            </TableCell>
+          </TableRow>
+        ))}
+        {/* {reservations.map((reservation) => (
           <TableRow key={reservation.id}>
             <TableCell className="font-medium text-center">
               {reservation.user.name}
@@ -87,13 +94,8 @@ export const ReservationsTable = ({ reservations }: Props) => {
             <TableCell className="text-center">
               <ReservationDialog reservationId={reservation.id} />
             </TableCell>
-            {/* <TableCell>{user.email}</TableCell>
-            <TableCell className="text-center">
-              {user?.reservations.length}
-            </TableCell>
-            <TableCell className="text-center">{user.reviews.length}</TableCell> */}
           </TableRow>
-        ))}
+        ))} */}
       </TableBody>
     </Table>
   );

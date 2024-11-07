@@ -8,8 +8,12 @@ import { toast } from "sonner";
 
 import { Doctor } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
+import { createReservation } from "@/actions/reservation";
+import { EStatusType } from "@/types";
 
+import icon from "@/app/assets/icons/section-start.svg";
+
+import { Button } from "@/components/ui/button";
 import {
   Select,
   SelectContent,
@@ -27,16 +31,12 @@ import {
 } from "@/components/ui/form";
 import { DateTimePicker } from "@/components/shared/DateTimePicker";
 import { Textarea } from "@/components/ui/textarea";
-import { createReservation } from "@/actions/reservation";
-import Image from "next/image";
-import icon from "@/app/assets/icons/section-start.svg";
-import { EStatusType } from "@/types";
 
 const formSchema = z.object({
   doctor: z.string().min(2, {
     message: "Please select a doctor",
   }),
-  date: z.string().nonempty({ message: "Date is required" }),
+  date: z.string().nonempty({ message: "Please select a date" }),
   hour: z.number().min(0, {
     message: "Hour is required",
   }),
@@ -49,24 +49,32 @@ type Props = {
 };
 
 export const BookAppointment = ({ doctors, userId }: Props) => {
-  // console.log("doctors", doctors);
-
   const router = useRouter();
   const [selectedTimeSlotId, setSelectedTimeSlotId] = useState<string | null>(
     null
   );
   const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
+  const [availableDates, setAvailableDates] = useState<{
+    [key: string]: { hour: number; id: string }[];
+  }>({});
+  const [availableHours, setAvailableHours] = useState<
+    { hour: number; id: string }[]
+  >([]);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string>("");
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       doctor: "",
       date: "",
+      message: "",
     },
   });
 
   const setDateAndTime = (date: Date, time: number) => {
     console.log("date", date);
+    console.log("hour", time);
 
     form.setValue("date", JSON.stringify(date));
     form.setValue("hour", time);
@@ -98,6 +106,9 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
     if (res.ok) {
       toast.success(res.message);
       form.reset();
+      setSelectedDoctor(null);
+      setSelectedDate(null);
+      setSelectedTime("");
     } else {
       toast.error(res.message);
     }
@@ -117,8 +128,10 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
           <div className="flex flex-col gap-y-[20px] md:w-[40%]">
             <div className="book-appointment-section__header">
               <div className="flex flex-col">
-                <div className="flex items-center gap-[10px]">
-                  <Image src={icon.src} alt="" layout="" />
+                <div className="flex items-center gap-[10px]  ">
+                  <div className="w-[16px] h-[17px]">
+                    <img src={icon.src} alt="" className="w-full h-auto" />
+                  </div>
                   <span>Schedule Now</span>
                 </div>
                 <div>
@@ -144,8 +157,11 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
                         <FormControl>
                           {/* <Input placeholder="shadcn" {...field} /> */}
                           <Select
+                            value={selectedDoctor || ""}
                             onValueChange={(value) => {
+                              console.log("doctor", value);
                               form.setValue("doctor", value);
+
                               setSelectedDoctor(value);
                             }}
                           >
@@ -178,9 +194,17 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
                           {/* <Input placeholder="shadcn" {...field} /> */}
                           <DateTimePicker
                             selectedDoctor={selectedDoctor}
+                            selectedTime={selectedTime}
+                            setSelectedTime={setSelectedTime}
+                            selectedDate={selectedDate}
+                            setSelectedDate={setSelectedDate}
                             setDateAndTime={setDateAndTime}
                             resetDateAndTime={resetDateAndTime}
                             setSelectedTimeSlotId={setSelectedTimeSlotId}
+                            availableDates={availableDates}
+                            setAvailableDates={setAvailableDates}
+                            availableHours={availableHours}
+                            setAvailableHours={setAvailableHours}
                           />
                         </FormControl>
                         <FormMessage />
@@ -206,6 +230,10 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
                   <Button
                     className="w-full px-[14px] py-[24px] text-[16px] bg-[#009ace] rounded-[60px] font-medium"
                     type="submit"
+                    onClick={() => {
+                      console.log(form.formState.errors);
+                      // resetDateAndTime();
+                    }}
                   >
                     Book Appointment
                   </Button>

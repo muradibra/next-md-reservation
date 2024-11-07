@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Pencil2Icon } from "@radix-ui/react-icons";
 import { updateStatus } from "@/actions/reservation";
 import { toast } from "sonner";
+import { EStatusType } from "@/types";
 
 type Props = {
   reservationId: string;
@@ -34,7 +35,7 @@ export const ReservationDialog = ({ reservationId }: Props) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectValue, setSelectValue] = useState<
-    "confirmed" | "cancelled" | null
+    EStatusType.CANCELLED | EStatusType.CONFIRMED | null
   >(null);
 
   const statusUpdate = async () => {
@@ -64,7 +65,9 @@ export const ReservationDialog = ({ reservationId }: Props) => {
         <h4>Reservation Status</h4>
         <Select
           onValueChange={(value) =>
-            setSelectValue(value as "confirmed" | "cancelled")
+            setSelectValue(
+              value as EStatusType.CANCELLED | EStatusType.CONFIRMED
+            )
           }
         >
           <SelectTrigger className="">

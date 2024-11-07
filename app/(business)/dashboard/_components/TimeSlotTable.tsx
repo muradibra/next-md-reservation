@@ -20,17 +20,6 @@ type Props = {
   timeSlots: (TimeSlot & {
     doctor: Doctor;
   })[];
-  // reservations: (Reservation & {
-  //   user: User;
-
-  //   doctor: Doctor;
-
-  //   timeSlot: TimeSlot;
-  // })[];
-  // updateStatus: (
-  //   reservationId: string,
-  //   status: string
-  // ) => Promise<{ ok: boolean; status: number }>;
 };
 
 export const TimeSlotTable = ({ timeSlots }: Props) => {
@@ -43,7 +32,6 @@ export const TimeSlotTable = ({ timeSlots }: Props) => {
       confirmButtonText: "Delete",
       denyButtonText: `Don't save`,
     }).then(async (result) => {
-      /* Read more about isConfirmed, isDenied below */
       if (result.isConfirmed) {
         await deleteTimeSlot(slotId);
 
@@ -79,7 +67,6 @@ export const TimeSlotTable = ({ timeSlots }: Props) => {
               {JSON.stringify(slot.available)}
             </TableCell>
             <TableCell className="text-center">
-              {/* <ReservationDialog reservationId={reservation.id} /> */}
               <Button
                 onClick={() => handleTimeSlotDelete(slot.id)}
                 variant={"destructive"}
@@ -94,13 +81,3 @@ export const TimeSlotTable = ({ timeSlots }: Props) => {
     </Table>
   );
 };
-{
-  /* <TableCell className="flex gap-3 items-center">
-  <Button variant={"destructive"} onClick={deleteUser}>
-    <Trash2Icon className="w-5 h-5 " />
-  </Button>
-  <Button variant={"secondary"}>
-    <PencilIcon className="w-5 h-5 cursor-pointer" />
-  </Button>
-</TableCell> */
-}

@@ -8,6 +8,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "react-calendar/dist/Calendar.css";
 import { Button } from "../ui/button";
 import { getAvailableDates } from "@/actions/dates";
+import { cn } from "@/lib/utils";
 
 // type ValuePiece = Date | null;
 
@@ -15,9 +16,19 @@ import { getAvailableDates } from "@/actions/dates";
 
 type Props = {
   selectedDoctor: string | null;
+  selectedTime: string | null;
+  setSelectedTime: (time: string) => void;
+  selectedDate: Date | null;
+  setSelectedDate: (date: Date | null) => void;
   setDateAndTime: (date: Date, time: number) => void;
   resetDateAndTime: () => void;
-  setSelectedTimeSlotId: React.Dispatch<React.SetStateAction<string | null>>;
+  setSelectedTimeSlotId: (id: string) => void;
+  availableDates: { [key: string]: { hour: number; id: string }[] };
+  availableHours: { hour: number; id: string }[];
+  setAvailableDates: (dates: {
+    [key: string]: { hour: number; id: string }[];
+  }) => void;
+  setAvailableHours: (hours: { hour: number; id: string }[]) => void;
 };
 
 export const DateTimePicker = ({
@@ -25,16 +36,16 @@ export const DateTimePicker = ({
   setDateAndTime,
   resetDateAndTime,
   setSelectedTimeSlotId,
+  selectedDate,
+  setSelectedDate,
+  selectedTime,
+  setSelectedTime,
+  availableDates,
+  availableHours,
+  setAvailableDates,
+  setAvailableHours,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedTime, setSelectedTime] = useState<string>("");
-  const [date, setDate] = useState<Date | null>(null);
-  const [availableDates, setAvailableDates] = useState<{
-    [key: string]: { hour: number; id: string }[];
-  }>({});
-  const [availableHours, setAvailableHours] = useState<
-    { hour: number; id: string }[]
-  >([]);
 
   const toggleModal = () => {
     if (!selectedDoctor) return;
@@ -45,13 +56,13 @@ export const DateTimePicker = ({
   const handleTimeSelection = (hour: number, id: string) => {
     setSelectedTime(hour.toString());
     setSelectedTimeSlotId(id);
-    if (date) {
-      setDateAndTime(date, hour);
+    if (selectedDate) {
+      setDateAndTime(selectedDate, hour);
     }
   };
 
   const handleDateChange = (value: Date | Date[]) => {
-    setDate(Array.isArray(value) ? value[0] : value);
+    setSelectedDate(Array.isArray(value) ? value[0] : value);
     const dateKey = (Array.isArray(value) ? value[0] : value)
       .toISOString()
       .split("T")[0];
@@ -141,7 +152,7 @@ export const DateTimePicker = ({
                 <div className="mx-auto sm:mx-0 flex justify-center my-5 [&>div>div]:shadow-none [&>div>div]:bg-gray-50 [&_div>button]:bg-gray-50">
                   <Calendar
                     onChange={(value) => handleDateChange(value as Date)}
-                    value={date} // bind selected date to value
+                    value={selectedDate} // bind selected date to value
                     tileDisabled={isTileDisabled}
                     // onClickDay={() =>
                     //   setDateAndTime(date, Number(selectedTime))
@@ -154,8 +165,15 @@ export const DateTimePicker = ({
                 <ul className="grid w-full grid-cols-3 gap-2 mb-5">
                   {availableHours.map((hour) => (
                     <button
+                      type="button"
                       key={hour.hour}
                       onClick={() => handleTimeSelection(hour.hour, hour.id)}
+                      className={cn(
+                        "inline-flex items-center justify-center w-full px-2 py-1 text-sm font-medium text-center border rounded-lg cursor-pointer",
+                        selectedTime === hour.hour.toString()
+                          ? "bg-blue-500 text-white"
+                          : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50"
+                      )}
                     >
                       {hour.hour}:00
                     </button>
@@ -166,8 +184,8 @@ export const DateTimePicker = ({
                     variant={"default"}
                     type="button"
                     onClick={() => {
-                      if (date && selectedTime) {
-                        setDateAndTime(date, Number(selectedTime));
+                      if (selectedDate && selectedTime) {
+                        setDateAndTime(selectedDate, Number(selectedTime));
                         console.log("Selected time:", selectedTime);
                         closeModal();
                       }

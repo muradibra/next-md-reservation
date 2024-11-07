@@ -12,14 +12,20 @@ export const AboutUsSection = () => {
     >
       <div className="w-container">
         <div className="about-us-section-inner flex flex-col gap-10 md:flex-row md:justify-between md:items-center">
-          <div className="main-img md:w-[46%]">
-            <Image src={mainImg} alt="About Us" layout="" />
+          <div className="main-img md:w-[46%] ">
+            <img src={mainImg.src} alt="About Us" className="w-full h-full" />
           </div>
 
           <div className="section-data flex flex-col gap-y-[20px] lg:gap-y-[40px] md:w-[46%]">
             <div className="section-header ">
-              <div className="flex gap-[10px]">
-                <Image src={sectionIcon.src} alt="Icon" layout="" />
+              <div className="flex items-center gap-[10px]">
+                <div className="relative w-[16px] h-[17px]">
+                  <img
+                    src={sectionIcon.src}
+                    alt="Icon"
+                    className="w-full h-full"
+                  />
+                </div>
                 <span className="text-[#009ace] font-semibold leading-[120%]">
                   About Us
                 </span>

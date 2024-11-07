@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { z } from "zod";
 
 import {
   Dialog,
@@ -35,7 +36,6 @@ type Props = {
   doctors: Doctor[];
 };
 
-import { z } from "zod";
 import { createTimeSlot } from "@/actions/timeSlot";
 import { toast } from "sonner";
 

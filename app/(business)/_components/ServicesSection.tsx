@@ -17,8 +17,14 @@ export const ServicesSection = () => {
         <div className="services-section-inner flex flex-col gap-y-[30px] md:flex-row md:justify-between relative">
           <div className="services-left flex flex-col gap-5 lg:gap-[40px] md:w-[48%] md:sticky md:top-[10%] md:h-[400px]">
             <div className="services-left__section-header ">
-              <div className="flex gap-[10px] items-center">
-                <Image src={sectionIcon.src} alt="Icon" layout="" />
+              <div className="flex gap-[10px] items-center ">
+                <div className="relative w-[16px] h-[17px]">
+                  <img
+                    src={sectionIcon.src}
+                    alt="Icon"
+                    className="w-full h-full"
+                  />
+                </div>
                 <span className="text-[#009ace] font-semibold leading-[120%]">
                   Our Services
                 </span>
@@ -47,10 +53,9 @@ export const ServicesSection = () => {
           <div className="services-right md:w-[48%] md:flex md:flex-col md:gap-y-[20px] overflow-y-auto ">
             <div className="service-right__card p-[20px] mb-[20px]  bg-white rounded-md flex flex-col sm:flex-row sm:gap-x-[20px] sm:items-center md:flex-col md:items-baseline lg:flex-row lg:items-center">
               <div className="service-right__card-img rounded-md overflow-hidden aspect-[7/8] sm:w-[48%] md:w-full">
-                <Image
-                  src={service1}
+                <img
+                  src={service1.src}
                   alt="Service"
-                  layout=""
                   className="rounded-md w-full h-full object-cover"
                 />
               </div>
@@ -73,10 +78,9 @@ export const ServicesSection = () => {
             </div>
             <div className="service-right__card p-[20px] mb-[20px]  bg-white rounded-md flex flex-col sm:flex-row sm:gap-x-[20px] sm:items-center md:flex-col md:items-baseline lg:flex-row lg:items-center">
               <div className="service-right__card-img rounded-md overflow-hidden aspect-[7/8] sm:w-[48%] md:w-full">
-                <Image
-                  src={service2}
+                <img
+                  src={service2.src}
                   alt="Service"
-                  layout=""
                   className="rounded-md w-full h-full object-cover"
                 />
               </div>
@@ -99,10 +103,9 @@ export const ServicesSection = () => {
             </div>
             <div className="service-right__card p-[20px] mb-[20px]  bg-white rounded-md flex flex-col sm:flex-row sm:gap-x-[20px] sm:items-center md:flex-col md:items-baseline lg:flex-row lg:items-center">
               <div className="service-right__card-img rounded-md overflow-hidden aspect-[7/8] sm:w-[48%] md:w-full">
-                <Image
-                  src={service3}
+                <img
+                  src={service3.src}
                   alt="Service"
-                  layout=""
                   className="rounded-md w-full h-full object-cover"
                 />
               </div>
@@ -126,10 +129,9 @@ export const ServicesSection = () => {
             </div>
             <div className="service-right__card p-[20px] bg-white rounded-md flex flex-col sm:flex-row sm:gap-x-[20px] sm:items-center md:flex-col md:items-baseline lg:flex-row lg:items-center">
               <div className="service-right__card-img rounded-md overflow-hidden aspect-[7/8] sm:w-[48%] md:w-full">
-                <Image
-                  src={service4}
+                <img
+                  src={service4.src}
                   alt="Service"
-                  layout=""
                   className="rounded-md w-full h-full object-cover"
                 />
               </div>
