@@ -74,8 +74,8 @@ export const ReservationDialog = ({ reservationId }: Props) => {
             <SelectValue placeholder="Select status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="confirmed">Confirmed</SelectItem>
-            <SelectItem value="cancelled">Cancelled</SelectItem>
+            <SelectItem value={EStatusType.CONFIRMED}>Confirmed</SelectItem>
+            <SelectItem value={EStatusType.CANCELLED}>Cancelled</SelectItem>
           </SelectContent>
         </Select>
 

@@ -9,6 +9,7 @@ import "react-calendar/dist/Calendar.css";
 import { Button } from "../ui/button";
 import { getAvailableDates } from "@/actions/dates";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 // type ValuePiece = Date | null;
 
@@ -20,15 +21,15 @@ type Props = {
   setSelectedTime: (time: string) => void;
   selectedDate: Date | null;
   setSelectedDate: (date: Date | null) => void;
-  setDateAndTime: (date: Date, time: number) => void;
+  setDateAndTime: (date: Date, time: string) => void;
   resetDateAndTime: () => void;
   setSelectedTimeSlotId: (id: string) => void;
   availableDates: { [key: string]: { hour: number; id: string }[] };
-  availableHours: { hour: number; id: string }[];
+  availableHours: { hour: string; id: string }[];
   setAvailableDates: (dates: {
     [key: string]: { hour: number; id: string }[];
   }) => void;
-  setAvailableHours: (hours: { hour: number; id: string }[]) => void;
+  setAvailableHours: (hours: { hour: string; id: string }[]) => void;
 };
 
 export const DateTimePicker = ({
@@ -53,8 +54,8 @@ export const DateTimePicker = ({
   };
   const closeModal = () => setIsOpen(false);
 
-  const handleTimeSelection = (hour: number, id: string) => {
-    setSelectedTime(hour.toString());
+  const handleTimeSelection = (hour: string, id: string) => {
+    setSelectedTime(hour);
     setSelectedTimeSlotId(id);
     if (selectedDate) {
       setDateAndTime(selectedDate, hour);
@@ -69,7 +70,10 @@ export const DateTimePicker = ({
     const availableSlots = availableDates[dateKey] || [];
 
     setAvailableHours(
-      availableSlots.map((slot: { hour: number; id: string }) => slot)
+      availableSlots.map((slot: { hour: number; id: string }) => ({
+        hour: slot.hour.toString(),
+        id: slot.id,
+      }))
     );
   };
 
@@ -116,7 +120,7 @@ export const DateTimePicker = ({
           tabIndex={-1}
           className="overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 flex justify-center items-center w-full h-[calc(100%-1rem)] max-h-full"
         >
-          <div className="relative p-4 w-full max-w-[23rem] max-h-full">
+          <div className="relative p-4 w-full max-w-[25rem] max-h-full">
             <div className="relative bg-white rounded-lg shadow dark:bg-gray-800">
               <div className="flex items-center justify-between p-4 border-b rounded-t dark:border-gray-600">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -175,7 +179,7 @@ export const DateTimePicker = ({
                           : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50"
                       )}
                     >
-                      {hour.hour}:00
+                      {hour.hour}
                     </button>
                   ))}
                 </ul>
@@ -185,9 +189,11 @@ export const DateTimePicker = ({
                     type="button"
                     onClick={() => {
                       if (selectedDate && selectedTime) {
-                        setDateAndTime(selectedDate, Number(selectedTime));
+                        setDateAndTime(selectedDate, selectedTime);
                         console.log("Selected time:", selectedTime);
                         closeModal();
+                      } else {
+                        toast.info("Please select a date and time");
                       }
                     }}
                     className="text-white  font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"

@@ -35,7 +35,7 @@ model TimeSlot {
   id        String   @id @default(cuid())
   doctorId  String
   date      DateTime // Stores the specific day (e.g., 2024-10-31)
-  hour      Int // Stores the hour (e.g., 9 for 9 AM, 17 for 5 PM)
+  hour      String // Stores the hour (e.g., 9 for 9 AM, 17 for 5 PM)
   available Boolean  @default(true) // Indicates if this slot is available
 
   doctor      Doctor       @relation(fields: [doctorId], references: [id])

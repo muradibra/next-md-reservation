@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 
 type CreateTimeSlotProps = {
   values: {
-    hour: number;
+    hour: string;
     doctor: string;
     date: string;
     availability: boolean;
@@ -54,6 +54,28 @@ export async function createTimeSlot({ values }: CreateTimeSlotProps) {
       ok: true,
       status: 200,
       message: "Timeslot created successfully",
+    };
+  } catch (err: any) {
+    return {
+      ok: false,
+      status: 500,
+      message: err.message,
+    };
+  }
+}
+
+export async function getExistingTimeSlots(doctorId: string) {
+  try {
+    const timeSlots = await prisma.timeSlot.findMany({
+      where: {
+        doctorId,
+      },
+    });
+
+    return {
+      ok: true,
+      status: 200,
+      data: timeSlots,
     };
   } catch (err: any) {
     return {

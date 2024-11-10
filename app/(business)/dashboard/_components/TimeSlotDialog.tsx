@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { z } from "zod";
 
 import {
@@ -36,12 +36,12 @@ type Props = {
   doctors: Doctor[];
 };
 
-import { createTimeSlot } from "@/actions/timeSlot";
+import { createTimeSlot, getExistingTimeSlots } from "@/actions/timeSlot";
 import { toast } from "sonner";
 
 const formSchema = z.object({
   date: z.string().min(1, "Please select a date"),
-  hour: z.number().min(1, "Please select the hour"),
+  hour: z.string().min(1, "Please select the hour"),
   doctor: z.string().min(1, "Please select a doctor"),
   availability: z
     .boolean()
@@ -51,19 +51,71 @@ const formSchema = z.object({
 export const TimeSlotDialog = ({ type, doctors }: Props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
+  const [existingTimeSlots, setExistingTimeSlots] = useState<{
+    [key: string]: string[];
+  }>({});
   const dialogType = type === "CREATE" ? "Create Timeslot" : "Update Timeslot";
   const today = new Date().toISOString().split("T")[0];
   console.log(today);
+
+  useEffect(() => {
+    if (selectedDoctor) {
+      fetchExistingTimeSlots(selectedDoctor);
+    } else {
+      setExistingTimeSlots({});
+    }
+  }, [selectedDoctor]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       date: "",
-      hour: 0,
+      hour: "",
       doctor: "",
       availability: undefined,
     },
   });
+
+  const fetchExistingTimeSlots = async (doctorId: string) => {
+    const res = await getExistingTimeSlots(doctorId);
+
+    if (res.ok) {
+      const timeSlots =
+        res.data?.reduce((acc: { [key: string]: string[] }, slot) => {
+          const date = slot.date.toISOString().split("T")[0];
+          if (!acc[date]) {
+            acc[date] = [];
+          }
+          acc[date].push(slot.hour);
+          return acc;
+        }, {}) || {};
+      setExistingTimeSlots(timeSlots);
+    } else {
+      toast.error(res.message);
+    }
+  };
+
+  const isTimeSlotDisabled = useCallback(
+    (date: string, hour: string) => {
+      return existingTimeSlots[date]?.includes(hour);
+    },
+    [existingTimeSlots]
+  );
+
+  // const isDateDisabled = (date: string) => {
+  //   const workingHours = [
+  //     "9:00-10:00",
+  //     "10:00-11:00",
+  //     "11:00-12:00",
+  //     "12:00-13:00",
+  //     "13:00-14:00",
+  //     "14:00-15:00",
+  //     "15:00-16:00",
+  //     "16:00-17:00",
+  //   ];
+  //   return existingTimeSlots[date]?.length === workingHours.length;
+  // };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
@@ -94,13 +146,57 @@ export const TimeSlotDialog = ({ type, doctors }: Props) => {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <FormField
               control={form.control}
+              name="doctor"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Doctor</FormLabel>
+                  <FormControl>
+                    <Select
+                      value={selectedDoctor || ""}
+                      onValueChange={(value) => {
+                        form.setValue("doctor", value);
+                        setSelectedDoctor(value);
+                      }}
+                    >
+                      <SelectTrigger className="">
+                        <SelectValue placeholder="Select doctor" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {doctors.map((doctor) => (
+                          <SelectItem key={doctor.id} value={doctor.id}>
+                            {doctor.firstName} {doctor.lastName},{" "}
+                            {doctor.specialty}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="date"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Date</FormLabel>
                   <FormControl>
                     {/* <Input placeholder="shadcn" {...field} /> */}
-                    <Input type="date" min={today} {...field} />
+                    <Input
+                      type="date"
+                      min={today}
+                      {...field}
+                      onChange={(e) => {
+                        const date = e.target.value;
+                        form.setValue("date", date);
+                        setExistingTimeSlots((prevSlots) => ({
+                          ...prevSlots,
+                          [date]: prevSlots[date] || [], // Ensure state consistency
+                        }));
+                      }}
+                      // disabled={isDateDisabled(field.value)}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -115,45 +211,31 @@ export const TimeSlotDialog = ({ type, doctors }: Props) => {
                   <FormLabel>Hour</FormLabel>
                   <FormControl>
                     <Select
-                      onValueChange={(value) =>
-                        form.setValue("hour", Number(value))
-                      }
+                      onValueChange={(value) => form.setValue("hour", value)}
                     >
                       <SelectTrigger className="">
                         <SelectValue placeholder="Select hour" />
                       </SelectTrigger>
                       <SelectContent>
-                        {[9, 10, 11, 12, 13, 14, 15, 16, 17].map((hour) => (
-                          <SelectItem key={hour} value={hour.toString()}>
-                            {hour}:00
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="doctor"
-              render={() => (
-                <FormItem>
-                  <FormLabel>Doctor</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={(value) => form.setValue("doctor", value)}
-                    >
-                      <SelectTrigger className="">
-                        <SelectValue placeholder="Select doctor" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {doctors.map((doctor) => (
-                          <SelectItem key={doctor.id} value={doctor.id}>
-                            {doctor.firstName} {doctor.lastName},{" "}
-                            {doctor.specialty}
+                        {[
+                          "9:00-10:00",
+                          "10:00-11:00",
+                          "11:00-12:00",
+                          "12:00-13:00",
+                          "13:00-14:00",
+                          "14:00-15:00",
+                          "15:00-16:00",
+                          "16:00-17:00",
+                        ].map((hour) => (
+                          <SelectItem
+                            key={hour}
+                            value={hour.toString()}
+                            disabled={isTimeSlotDisabled(
+                              form.getValues("date"),
+                              hour
+                            )}
+                          >
+                            {hour}
                           </SelectItem>
                         ))}
                       </SelectContent>

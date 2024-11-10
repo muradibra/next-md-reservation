@@ -70,7 +70,7 @@ export const ReservationsTable = ({ reservations }: Props) => {
             </TableCell>
             <TableCell className="text-center">
               {moment(reservation.timeSlot.date).format("MMM Do YY")}{" "}
-              {reservation.timeSlot.hour}:00
+              {reservation.timeSlot.hour}
             </TableCell>
             <TableCell
               className={cn(

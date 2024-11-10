@@ -37,7 +37,7 @@ export const AboutUsSection = () => {
             </div>
             <div className="section-body">
               <p className="section-desc text-[#4d4d4d] ">
-                At MextMD, we believe in delivering healthcare that you can
+                At NextMD, we believe in delivering healthcare that you can
                 trust. With a team of highly qualified physicians and medical
                 specialists, we are committed to providing comprehensive,
                 evidence-based care that leads to real, measurable outcomes. Our

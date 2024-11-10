@@ -67,20 +67,20 @@ export async function createReservation(obj: ReservationValues) {
 
 export async function updateStatus(reservationId: string, status: string) {
   try {
-    await prisma.reservation.update({
-      where: {
-        id: reservationId,
-      },
-      data: {
-        status,
-      },
-    });
-
-    revalidatePath("/");
-    return {
-      ok: true,
-      status: 200,
-    };
+    // const { ok, url, error } = await createCheckoutSession(reservationId);
+    // await prisma.reservation.update({
+    //   where: {
+    //     id: reservationId,
+    //   },
+    //   data: {
+    //     status,
+    //   },
+    // });
+    // revalidatePath("/");
+    // return {
+    //   ok: true,
+    //   status: 200,
+    // };
   } catch (err) {
     return {
       ok: false,

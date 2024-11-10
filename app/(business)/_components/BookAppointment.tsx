@@ -31,13 +31,14 @@ import {
 } from "@/components/ui/form";
 import { DateTimePicker } from "@/components/shared/DateTimePicker";
 import { Textarea } from "@/components/ui/textarea";
+import { createCheckoutSession } from "@/actions/stripe";
 
 const formSchema = z.object({
   doctor: z.string().min(2, {
     message: "Please select a doctor",
   }),
   date: z.string().nonempty({ message: "Please select a date" }),
-  hour: z.number().min(0, {
+  hour: z.string().min(0, {
     message: "Hour is required",
   }),
   message: z.string().optional(),
@@ -58,7 +59,7 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
     [key: string]: { hour: number; id: string }[];
   }>({});
   const [availableHours, setAvailableHours] = useState<
-    { hour: number; id: string }[]
+    { hour: string; id: string }[]
   >([]);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string>("");
@@ -72,7 +73,7 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
     },
   });
 
-  const setDateAndTime = (date: Date, time: number) => {
+  const setDateAndTime = (date: Date, time: string) => {
     console.log("date", date);
     console.log("hour", time);
 
@@ -92,26 +93,36 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
       return;
     }
 
+    const { ok, url, error } = await createCheckoutSession("reservationId");
+
+    if (!ok) {
+      toast.error("Error while creating reservation");
+      return;
+    } else {
+      // toast.success("Reservation created");
+      window.location.assign(url!);
+    }
+
     console.log("---values---", values);
 
-    const obj = {
-      ...values,
-      timeSlotId: selectedTimeSlotId,
-      userId,
-      status: EStatusType.PENDING,
-    };
+    // const obj = {
+    //   ...values,
+    //   timeSlotId: selectedTimeSlotId,
+    //   userId,
+    //   status: EStatusType.PENDING,
+    // };
 
-    const res = await createReservation(obj);
+    // const res = await createReservation(obj);
 
-    if (res.ok) {
-      toast.success(res.message);
-      form.reset();
-      setSelectedDoctor(null);
-      setSelectedDate(null);
-      setSelectedTime("");
-    } else {
-      toast.error(res.message);
-    }
+    // if (res.ok) {
+    //   toast.success(res.message);
+    //   form.reset();
+    //   setSelectedDoctor(null);
+    //   setSelectedDate(null);
+    //   setSelectedTime("");
+    // } else {
+    //   toast.error(res.message);
+    // }
 
     // console.log({ ...values, timeslotId: selectedTimeSlotId });
   }
@@ -159,10 +170,16 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
                           <Select
                             value={selectedDoctor || ""}
                             onValueChange={(value) => {
-                              console.log("doctor", value);
                               form.setValue("doctor", value);
-
                               setSelectedDoctor(value);
+
+                              form.setValue("date", "");
+                              form.setValue("hour", "");
+                              form.setValue("message", "");
+                              setSelectedTime("");
+                              setSelectedTimeSlotId(null);
+                              setAvailableHours([]);
+                              setAvailableDates({});
                             }}
                           >
                             <SelectTrigger>

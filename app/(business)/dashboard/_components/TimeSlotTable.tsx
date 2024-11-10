@@ -55,7 +55,7 @@ export const TimeSlotTable = ({ timeSlots }: Props) => {
         {timeSlots.map((slot) => (
           <TableRow key={slot.id}>
             <TableCell className="font-medium text-center">
-              {moment(slot.date).format("MMM Do YY")} {slot.hour}:00
+              {moment(slot.date).format("MMM Do YY")} {slot.hour}
             </TableCell>
             <TableCell className="text-center">
               {slot.doctor.firstName} {slot.doctor.lastName}
