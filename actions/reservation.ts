@@ -29,7 +29,7 @@ export async function createReservation(obj: ReservationValues) {
       throw new Error("Invalid user ID");
     }
 
-    await prisma.reservation.create({
+    const reservation = await prisma.reservation.create({
       data: {
         userId,
         slotId: timeSlotId!,
@@ -54,6 +54,7 @@ export async function createReservation(obj: ReservationValues) {
       ok: true,
       status: 200,
       message: "Reservation created",
+      reservation,
     };
   } catch (err) {
     console.log("------reservation error------", err);
@@ -68,19 +69,19 @@ export async function createReservation(obj: ReservationValues) {
 export async function updateStatus(reservationId: string, status: string) {
   try {
     // const { ok, url, error } = await createCheckoutSession(reservationId);
-    // await prisma.reservation.update({
-    //   where: {
-    //     id: reservationId,
-    //   },
-    //   data: {
-    //     status,
-    //   },
-    // });
-    // revalidatePath("/");
-    // return {
-    //   ok: true,
-    //   status: 200,
-    // };
+    await prisma.reservation.update({
+      where: {
+        id: reservationId,
+      },
+      data: {
+        status,
+      },
+    });
+    revalidatePath("/");
+    return {
+      ok: true,
+      status: 200,
+    };
   } catch (err) {
     return {
       ok: false,

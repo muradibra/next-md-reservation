@@ -32,6 +32,7 @@ export async function createCheckoutSession(reservationId: string) {
         success_url: `${origin}/payment-success`,
         cancel_url: `${origin}/payment-failed`,
         metadata: {
+          reservationId,
           // userId: loggedUser.id,
           // priceId,
         },

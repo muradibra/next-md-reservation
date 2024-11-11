@@ -93,36 +93,37 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
       return;
     }
 
-    const { ok, url, error } = await createCheckoutSession("reservationId");
+    const obj = {
+      ...values,
+      timeSlotId: selectedTimeSlotId,
+      userId,
+      status: EStatusType.PENDING,
+    };
+
+    const res = await createReservation(obj);
+
+    if (res.ok) {
+      toast.success(res.message);
+      form.reset();
+      setSelectedDoctor(null);
+      setSelectedDate(null);
+      setSelectedTime("");
+    } else {
+      toast.error(res.message);
+    }
+
+    if (!res.reservation) return;
+    const { ok, url } = await createCheckoutSession(res.reservation.id);
 
     if (!ok) {
       toast.error("Error while creating reservation");
       return;
     } else {
       // toast.success("Reservation created");
-      window.location.assign(url!);
+      window.location.assign(url as string);
     }
 
     console.log("---values---", values);
-
-    // const obj = {
-    //   ...values,
-    //   timeSlotId: selectedTimeSlotId,
-    //   userId,
-    //   status: EStatusType.PENDING,
-    // };
-
-    // const res = await createReservation(obj);
-
-    // if (res.ok) {
-    //   toast.success(res.message);
-    //   form.reset();
-    //   setSelectedDoctor(null);
-    //   setSelectedDate(null);
-    //   setSelectedTime("");
-    // } else {
-    //   toast.error(res.message);
-    // }
 
     // console.log({ ...values, timeslotId: selectedTimeSlotId });
   }

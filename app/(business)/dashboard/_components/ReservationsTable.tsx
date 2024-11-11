@@ -74,12 +74,14 @@ export const ReservationsTable = ({ reservations }: Props) => {
             </TableCell>
             <TableCell
               className={cn(
-                "text-center",
+                "text-center font-bold",
                 reservation.status === EStatusType.CONFIRMED
-                  ? "text-green-500"
+                  ? "text-green-600"
                   : reservation.status === EStatusType.CANCELLED
                   ? "text-red-600"
-                  : "text-yellow-500"
+                  : reservation.status === EStatusType.PAID
+                  ? "text-blue-600"
+                  : "text-yellow-600"
               )}
             >
               {reservation.status}
