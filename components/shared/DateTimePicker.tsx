@@ -90,6 +90,8 @@ export const DateTimePicker = ({
     }
   }, [selectedDoctor]);
 
+  console.log("Available dates:", availableDates);
+
   return (
     <>
       <button
