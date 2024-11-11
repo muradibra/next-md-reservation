@@ -119,9 +119,13 @@ export const TimeSlotDialog = ({ type, doctors }: Props) => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    // console.log(values);
+    console.log(values);
 
-    const res = await createTimeSlot({ values });
+    // Convert date to UTC format before sending to the server
+    const utcDate = new Date(values.date).toISOString().split("T")[0];
+    const updatedValues = { ...values, date: utcDate };
+
+    const res = await createTimeSlot({ values: updatedValues });
 
     if (res.ok) {
       toast.success(res.message);
