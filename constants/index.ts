@@ -12,8 +12,8 @@ export const navItems = [
     href: "/doctors",
   },
   {
-    label: "Blog",
-    href: "/Blog",
+    label: "Reservations",
+    href: "/reservations",
   },
   {
     label: "Review",

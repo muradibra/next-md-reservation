@@ -5,6 +5,7 @@ import { ServicesSection } from "./_components/ServicesSection";
 import { BookAppointment } from "./_components/BookAppointment";
 import { getDoctors } from "@/actions/doctor";
 import { getCurrentUserFromClerk } from "@/actions/user";
+import { ContactUs } from "@/components/shared/ContactUs";
 
 const HomePage = async () => {
   const { userId } = await getCurrentUserFromClerk();
@@ -16,6 +17,7 @@ const HomePage = async () => {
       <AboutUsSection />
       <ServicesSection />
       <BookAppointment doctors={doctors} userId={userId} />
+      <ContactUs />
     </div>
   );
 };

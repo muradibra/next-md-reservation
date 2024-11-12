@@ -10,6 +10,7 @@ import { Button } from "../ui/button";
 import { getAvailableDates } from "@/actions/dates";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import moment from "moment";
 
 // type ValuePiece = Date | null;
 
@@ -63,10 +64,9 @@ export const DateTimePicker = ({
   };
 
   const handleDateChange = (value: Date | Date[]) => {
-    setSelectedDate(Array.isArray(value) ? value[0] : value);
-    const dateKey = (Array.isArray(value) ? value[0] : value)
-      .toISOString()
-      .split("T")[0];
+    const selected = Array.isArray(value) ? value[0] : value;
+    setSelectedDate(selected);
+    const dateKey = moment(selected).format("YYYY-MM-DD");
     const availableSlots = availableDates[dateKey] || [];
 
     setAvailableHours(
@@ -78,7 +78,9 @@ export const DateTimePicker = ({
   };
 
   const isTileDisabled = ({ date }: { date: Date }) => {
-    const dateKey = date.toISOString().split("T")[0];
+    const dateKey = moment(date).format("YYYY-MM-DD");
+    console.log("Available dates:", availableDates[dateKey]);
+
     return !availableDates[dateKey]; // disable dates without availability
   };
 

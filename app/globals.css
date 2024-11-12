@@ -28,13 +28,6 @@ body {
   max-height: 550px;
 }
 
-.footer-grid {
-  grid-column-gap: 20px;
-  grid-row-gap: 20px;
-  flex-flow: column;
-  display: flex;
-}
-
 .main-btn {
   @apply inline-block rounded-[60px] border border-[#009ace] bg-[#009ace] transition-all duration-300 hover:bg-transparent hover:text-black px-[24px] py-[14px] text-white;
 }

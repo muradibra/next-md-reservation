@@ -16,11 +16,7 @@ export const getAvailableDates = async (doctorId: string) => {
   });
 
   const availableDates = timeslots.reduce((acc: any, timeslot: any) => {
-    const dateKey = new Date(
-      timeslot.date.getTime() + timeslot.date.getTimezoneOffset() * 60000
-    )
-      .toISOString()
-      .split("T")[0];
+    const dateKey = new Date(timeslot.date).toISOString().split("T")[0];
     if (!acc[dateKey]) {
       acc[dateKey] = [];
     }

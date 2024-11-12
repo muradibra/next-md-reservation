@@ -25,6 +25,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { createDoctor } from "@/actions/doctor";
 import { toast } from "sonner";
+import { UploadSingleImage } from "@/components/shared/UploadSingleImage";
 
 type Props = {
   type: "CREATE" | "UPDATE";
@@ -40,6 +41,9 @@ const formSchema = z.object({
   specialty: z.string().min(1, {
     message: "Specialty is required.",
   }),
+  imgUrl: z.string().min(1, {
+    message: "Image URL is required.",
+  }),
 });
 
 export const DoctorDialog = ({ type }: Props) => {
@@ -53,8 +57,18 @@ export const DoctorDialog = ({ type }: Props) => {
       firstName: "",
       lastName: "",
       specialty: "",
+      imgUrl: "",
     },
   });
+
+  const imgUrlValue = form.watch("imgUrl");
+
+  const handleChange = (url: string) => {
+    if (url) {
+      form.clearErrors("imgUrl");
+    }
+    form.setValue("imgUrl", url);
+  };
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
@@ -122,6 +136,22 @@ export const DoctorDialog = ({ type }: Props) => {
                 </FormItem>
               )}
             />
+
+            <FormField
+              control={form.control}
+              name="imgUrl"
+              render={() => (
+                <FormItem>
+                  <FormLabel>Doctor image</FormLabel>
+                  <UploadSingleImage
+                    url={imgUrlValue}
+                    handleChange={handleChange}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             <Button disabled={isLoading} className="w-full" type="submit">
               {dialogType}
             </Button>

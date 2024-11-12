@@ -69,7 +69,7 @@ export async function createReservation(obj: ReservationValues) {
 export async function updateStatus(reservationId: string, status: string) {
   try {
     // const { ok, url, error } = await createCheckoutSession(reservationId);
-    await prisma.reservation.update({
+    const reservation = await prisma.reservation.update({
       where: {
         id: reservationId,
       },
@@ -77,12 +77,35 @@ export async function updateStatus(reservationId: string, status: string) {
         status,
       },
     });
+
+    if (status === EStatusType.CANCELLED) {
+      await prisma.timeSlot.update({
+        where: {
+          id: reservation.slotId,
+        },
+        data: {
+          available: true,
+        },
+      });
+    } else if (status === EStatusType.CONFIRMED) {
+      await prisma.timeSlot.update({
+        where: {
+          id: reservation.slotId,
+        },
+        data: {
+          available: false,
+        },
+      });
+    }
+
     revalidatePath("/");
     return {
       ok: true,
       status: 200,
     };
   } catch (err) {
+    console.log("------updateStatus error------", err);
+
     return {
       ok: false,
       error: 500,

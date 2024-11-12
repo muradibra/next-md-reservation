@@ -4,9 +4,9 @@ import { headers } from "next/headers";
 import stripe from "@/lib/stripe";
 import prisma from "@/lib/prisma";
 import { EStatusType } from "@/types";
+
 type METADATA = {
   userId: string;
-  priceId: string;
   reservationId: string;
 };
 
@@ -24,35 +24,13 @@ export async function POST(request: NextRequest) {
   }
 
   const eventType = event.type;
-  // if (
-  //   eventType !== "checkout.session.completed" &&
-  //   eventType !== "checkout.session.async_payment_succeeded"
-  // )
-  //   return new Response("Server Error", {
-  //     status: 500,
-  //   });
-  // const data = event.data.object;
-  // const metadata = data.metadata as METADATA;
-  // const userId = metadata.userId;
-  // const priceId = metadata.priceId;
-  // const created = data.created;
-  // const currency = data.currency;
-  // const customerDetails = data.customer_details;
-  // const amount = data.amount_total;
-  // const transactionDetails = {
-  //   userId,
-  //   priceId,
-  //   created,
-  //   currency,
-  //   customerDetails,
-  //   amount,
-  // };
   try {
     // database update here
+    const object = event.data.object as Stripe.Checkout.Session;
+    const { reservationId } = object.metadata as METADATA;
     if (eventType === "checkout.session.completed") {
       // do something
       console.log("Event ", event);
-      const { reservationId } = event.data.object.metadata as METADATA;
       if (!reservationId) {
         return new Response("Order ID not found", {
           status: 400,
@@ -68,9 +46,18 @@ export async function POST(request: NextRequest) {
         },
       });
       console.log("Reservation ID ", reservationId);
+    } else {
+      await prisma.reservation.update({
+        where: {
+          id: reservationId,
+        },
+        data: {
+          status: EStatusType.CANCELLED,
+        },
+      });
     }
 
-    return new Response("Subscription added", {
+    return new Response("Payment success", {
       status: 200,
     });
   } catch (error) {

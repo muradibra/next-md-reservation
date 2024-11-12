@@ -23,8 +23,6 @@ type Props = {
 };
 
 export const TimeSlotTable = ({ timeSlots }: Props) => {
-  console.log(timeSlots);
-
   const handleTimeSlotDelete = async (slotId: string) => {
     Swal.fire({
       title: "Are you sure?",
@@ -34,7 +32,6 @@ export const TimeSlotTable = ({ timeSlots }: Props) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         await deleteTimeSlot(slotId);
-
         Swal.fire("Timeslot and its reservations deleted!", "", "success");
       }
     });

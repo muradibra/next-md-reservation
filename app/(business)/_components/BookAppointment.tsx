@@ -133,7 +133,7 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
   return (
     <section
       id="book-appointment-section"
-      className="py-[60px] sm:py-[80px] md:py-[100px] lg:py-[150px]"
+      className="py-[60px] sm:py-[80px] md:py-[100px] "
     >
       <div className="w-container">
         <div className="book-appointment-section-inner flex flex-col gap-y-[30px] md:flex-row md:items-center md:justify-between">

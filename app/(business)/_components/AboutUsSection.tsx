@@ -7,7 +7,7 @@ export const AboutUsSection = () => {
   return (
     <section
       id="about-us-section"
-      className="py-[60px] sm:py-[80px] md:py-[100px] lg:py-[150px]"
+      className="py-[60px] sm:py-[80px] md:py-[100px]"
     >
       <div className="w-container">
         <div className="about-us-section-inner flex flex-col gap-10 md:flex-row md:justify-between md:items-center">

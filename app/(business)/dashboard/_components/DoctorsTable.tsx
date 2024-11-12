@@ -10,6 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Doctor as PrismaDoctor, Review, Reservation } from "@prisma/client";
+import Image from "next/image";
 
 type Doctor = PrismaDoctor & {
   reviews: Review[];
@@ -37,6 +38,7 @@ export const DoctorsTable = ({ doctors }: Props) => {
     <Table>
       <TableHeader>
         <TableRow>
+          <TableHead className="text-center">Image</TableHead>
           <TableHead className="text-center">Firstname</TableHead>
           <TableHead className="text-center">Lastname</TableHead>
           <TableHead className="text-center">Specialty</TableHead>
@@ -47,6 +49,15 @@ export const DoctorsTable = ({ doctors }: Props) => {
       <TableBody>
         {doctors.map((doctor) => (
           <TableRow key={doctor.id}>
+            <TableCell className="flex justify-center">
+              <Image
+                width={70}
+                height={70}
+                src={doctor.imgUrl}
+                alt="doctor"
+                className=" rounded-lg"
+              />
+            </TableCell>
             <TableCell className="text-center">{doctor.firstName}</TableCell>
             <TableCell className="text-center">{doctor.lastName}</TableCell>
             <TableCell className="text-center">{doctor.specialty}</TableCell>

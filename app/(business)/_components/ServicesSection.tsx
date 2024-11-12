@@ -10,11 +10,11 @@ export const ServicesSection = () => {
   return (
     <section
       id="services-section"
-      className="py-[60px] sm:py-[80px] md:py-[100px] lg:py-[150px] bg-[#eff6f9]"
+      className="py-[60px] sm:py-[80px] md:py-[100px] bg-[#eff6f9]"
     >
       <div className="w-container">
         <div className="services-section-inner flex flex-col gap-y-[30px] md:flex-row md:justify-between relative">
-          <div className="services-left flex flex-col gap-5 lg:gap-[40px] md:w-[48%] md:sticky md:top-[10%] md:h-[400px]">
+          <div className="services-left flex flex-col gap-5 lg:gap-[40px] md:w-[48%] md:sticky md:top-[20%] md:h-[400px]">
             <div className="services-left__section-header ">
               <div className="flex gap-[10px] items-center ">
                 <div className="relative w-[16px] h-[17px]">
