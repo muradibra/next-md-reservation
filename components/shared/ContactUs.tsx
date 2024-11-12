@@ -1,7 +1,6 @@
 import React from "react";
 import sectionIcon from "@/app/assets/icons/section-start.svg";
 import Link from "next/link";
-import { navItems } from "@/constants";
 import contactUsHero from "@/app/assets/images/contact-us-hero.png";
 import contactUsHeroBg from "@/app/assets/images/contact-us-hero-bg.png";
 
@@ -31,7 +30,7 @@ export const ContactUs = () => {
               <div className="left__body">
                 <p>
                   Whether you need to schedule an appointment, ask a question,
-                  or seek immediate assistance, we're here to help.
+                  or seek immediate assistance, we&apos;re here to help.
                 </p>
               </div>
             </div>
