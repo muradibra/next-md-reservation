@@ -101,7 +101,7 @@ export const Header = ({ userId, role }: Props) => {
                     {navItemsWithPages.map((item) => (
                       <li
                         key={item.label}
-                        className="px-4 py-2 hover:bg-gray-100"
+                        className="px-4 py-2 hover:bg-gray-100 w-full cursor-pointer"
                         onClick={() => setIsNavDropdownOpen(false)}
                       >
                         <Link href={item.href}>{item.label}</Link>
@@ -129,7 +129,7 @@ export const Header = ({ userId, role }: Props) => {
             </ul>
           </div>
           <nav className="hidden lg:block">
-            <ul className="flex items-center gap-10">
+            <ul className="flex items-center gap-8">
               {navItemsWithoutPages.map((item) => (
                 <li key={item.label}>
                   <Link href={item.href} className="mr-6">
@@ -154,14 +154,26 @@ export const Header = ({ userId, role }: Props) => {
                     {navItemsWithPages.map((item) => (
                       <li
                         key={item.label}
-                        className="px-4 py-2 hover:bg-gray-100 text-[14px]"
+                        className=" hover:bg-gray-100 text-[14px] cursor-pointer"
                       >
-                        <Link href={item.href}>{item.label}</Link>
+                        <Link
+                          className="w-full px-4 py-2 inline-block"
+                          href={item.href}
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
+                          {item.label}
+                        </Link>
                       </li>
                     ))}
                     {role !== null && role === "ADMIN" && (
-                      <li className="px-4 py-2 hover:bg-gray-100 text-[14px]">
-                        <Link href={`/dashboard`}>Dashboard</Link>
+                      <li className="hover:bg-gray-100 text-[14px]">
+                        <Link
+                          className="w-full px-4 py-2 inline-block"
+                          href={`/dashboard`}
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
+                          Dashboard
+                        </Link>
                       </li>
                     )}
                   </ul>

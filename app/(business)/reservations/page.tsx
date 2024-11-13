@@ -12,6 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import moment from "moment";
+import { PageHeading } from "@/components/shared/PageHeading";
 
 const ReservationsPage = async () => {
   const { userId } = await getCurrentUserFromClerk();
@@ -33,6 +34,7 @@ const ReservationsPage = async () => {
 
   return (
     <div>
+      <PageHeading pageTitle="Your Reservations" pagePath="Reservations" />
       {!userId ? (
         <h1 className="text-2xl my-[60px] font-semibold text-center text-[#009ace]">
           To see your reservations, please sign in to your account

@@ -1,26 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-
-import { Doctor } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createReservation } from "@/actions/reservation";
-import { EStatusType } from "@/types";
+import { useForm } from "react-hook-form";
 
 import icon from "@/app/assets/icons/section-start.svg";
 
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Form,
   FormControl,
@@ -29,19 +17,33 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { DateTimePicker } from "@/components/shared/DateTimePicker";
-import { Textarea } from "@/components/ui/textarea";
-import { createCheckoutSession } from "@/actions/stripe";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Doctor } from "@prisma/client";
+import { RatingComponent } from "./RatingComponent";
+import { Input } from "@/components/ui/input";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { postReview } from "@/actions/review";
 
 const formSchema = z.object({
-  doctor: z.string().min(2, {
-    message: "Please select a doctor",
+  doctor: z.string().min(1, {
+    message: "Doctor is required.",
   }),
-  date: z.string().nonempty({ message: "Please select a date" }),
-  hour: z.string().min(0, {
-    message: "Hour is required",
+  rating: z.number().min(1, {
+    message: "Rating is required.",
   }),
-  message: z.string().optional(),
+  title: z.string().min(1, {
+    message: "Title is required.",
+  }),
+  comment: z.string().min(1, {
+    message: "Comment is required.",
+  }),
 });
 
 type Props = {
@@ -49,40 +51,25 @@ type Props = {
   userId: string | null;
 };
 
-export const BookAppointment = ({ doctors, userId }: Props) => {
+export const WriteReview = ({ doctors, userId }: Props) => {
+  const [value, setValue] = useState(0);
   const router = useRouter();
-  const [selectedTimeSlotId, setSelectedTimeSlotId] = useState<string | null>(
-    null
-  );
-  const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
-  const [availableDates, setAvailableDates] = useState<{
-    [key: string]: { hour: number; id: string }[];
-  }>({});
-  const [availableHours, setAvailableHours] = useState<
-    { hour: string; id: string }[]
-  >([]);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [selectedTime, setSelectedTime] = useState<string>("");
+
+  useEffect(() => {
+    form.setValue("rating", value);
+  }, [value]);
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       doctor: "",
-      date: "",
-      message: "",
+      rating: 0,
+      title: "",
+      comment: "",
     },
   });
 
-  const setDateAndTime = (date: Date, time: string) => {
-    form.setValue("date", JSON.stringify(date));
-    form.setValue("hour", time);
-  };
-
-  const resetDateAndTime = () => {
-    form.resetField("date");
-    form.resetField("hour");
-  };
-
+  // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof formSchema>) {
     if (!userId) {
       toast.info("You must be signed in to make a reservation");
@@ -92,37 +79,23 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
 
     const obj = {
       ...values,
-      timeSlotId: selectedTimeSlotId,
       userId,
-      status: EStatusType.PENDING,
     };
 
-    const res = await createReservation(obj);
+    const res = await postReview({ obj });
 
     if (res.ok) {
       toast.success(res.message);
-      form.reset();
-      setSelectedDoctor(null);
-      setSelectedDate(null);
-      setSelectedTime("");
+      // router.push("/reviews");
     } else {
       toast.error(res.message);
     }
-
-    if (!res.reservation) return;
-    const { ok, url } = await createCheckoutSession(res.reservation.id);
-
-    if (!ok) {
-      toast.error("Error while creating reservation");
-      return;
-    } else {
-      window.location.assign(url as string);
-    }
   }
+  console.log("value", value);
 
   return (
     <section
-      id="book-appointment-section"
+      // id="book-appointment-section"
       className="py-[60px] sm:py-[80px] md:py-[100px] "
     >
       <div className="w-container">
@@ -134,11 +107,11 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
                   <div className="w-[16px] h-[17px]">
                     <img src={icon.src} alt="" className="w-full h-auto" />
                   </div>
-                  <span>Schedule Now</span>
+                  <span>Review</span>
                 </div>
                 <div>
                   <h2 className="text-[#292929] font-medium leading-[130%] text-[30px] md:text-[40px] lg:text-[50px]">
-                    Book an Appointment
+                    Write a Review
                   </h2>
                 </div>
               </div>
@@ -158,18 +131,18 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
                         <FormLabel className="md:text-[20px]">Doctor</FormLabel>
                         <FormControl>
                           <Select
-                            value={selectedDoctor || ""}
+                            // value={selectedDoctor || ""}
                             onValueChange={(value) => {
                               form.setValue("doctor", value);
-                              setSelectedDoctor(value);
+                              // setSelectedDoctor(value);
 
-                              form.setValue("date", "");
-                              form.setValue("hour", "");
-                              form.setValue("message", "");
-                              setSelectedTime("");
-                              setSelectedTimeSlotId(null);
-                              setAvailableHours([]);
-                              setAvailableDates({});
+                              // form.setValue("date", "");
+                              // form.setValue("hour", "");
+                              // form.setValue("message", "");
+                              // setSelectedTime("");
+                              // setSelectedTimeSlotId(null);
+                              // setAvailableHours([]);
+                              // setAvailableDates({});
                             }}
                           >
                             <SelectTrigger>
@@ -191,40 +164,42 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
                   />
                   <FormField
                     control={form.control}
-                    name="date"
+                    name="rating"
                     render={() => (
                       <FormItem>
                         <FormLabel className="block md:text-[20px]">
-                          Date
+                          Rating
                         </FormLabel>
                         <FormControl>
-                          <DateTimePicker
-                            selectedDoctor={selectedDoctor}
-                            selectedTime={selectedTime}
-                            setSelectedTime={setSelectedTime}
-                            selectedDate={selectedDate}
-                            setSelectedDate={setSelectedDate}
-                            setDateAndTime={setDateAndTime}
-                            resetDateAndTime={resetDateAndTime}
-                            setSelectedTimeSlotId={setSelectedTimeSlotId}
-                            availableDates={availableDates}
-                            setAvailableDates={setAvailableDates}
-                            availableHours={availableHours}
-                            setAvailableHours={setAvailableHours}
-                          />
+                          {/* <CAlert color="red" content="salam" about="ssss"  /> */}
+                          <RatingComponent value={value} setValue={setValue} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-
                   <FormField
                     control={form.control}
-                    name="message"
+                    name="title"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="md:text-[20px]">
-                          Message
+                          Review Title
+                        </FormLabel>
+                        <FormControl>
+                          <Input placeholder="Your title..." {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="comment"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="md:text-[20px]">
+                          Review Comment
                         </FormLabel>
                         <FormControl>
                           <Textarea placeholder="Your message..." {...field} />
@@ -237,7 +212,7 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
                     className="w-full px-[14px] py-[24px] text-[16px] bg-[#009ace] rounded-[60px] font-medium"
                     type="submit"
                   >
-                    Book Appointment
+                    Post Review
                   </Button>
                 </form>
               </Form>
@@ -246,7 +221,7 @@ export const BookAppointment = ({ doctors, userId }: Props) => {
           <div
             className="opening-and-closing-times rounded-xl w-full p-[15px] gap-[90px] sm:p-[30px] lg:py-[30px] lg:px-[40px] md:w-[55%] bg-slate-500 flex flex-col justify-between "
             style={{
-              backgroundImage: `url(${"/app/assets/images/book-image.jpg"})`,
+              // backgroundImage: `url(${"/app/assets/images/book-image.jpg"})`,
               backgroundSize: "cover",
             }}
           >

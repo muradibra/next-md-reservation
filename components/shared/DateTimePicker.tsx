@@ -12,10 +12,6 @@ import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import moment from "moment";
 
-// type ValuePiece = Date | null;
-
-// type Value = ValuePiece | [ValuePiece, ValuePiece];
-
 type Props = {
   selectedDoctor: string | null;
   selectedTime: string | null;
@@ -49,6 +45,14 @@ export const DateTimePicker = ({
 }: Props) => {
   const [isOpen, setIsOpen] = useState(false);
 
+  useEffect(() => {
+    if (selectedDoctor) {
+      getAvailableDates(selectedDoctor).then(setAvailableDates);
+    } else {
+      setAvailableDates({});
+    }
+  }, [selectedDoctor]);
+
   const toggleModal = () => {
     if (!selectedDoctor) return;
     setIsOpen(!isOpen);
@@ -81,16 +85,24 @@ export const DateTimePicker = ({
     const dateKey = moment(date).format("YYYY-MM-DD");
     console.log("Available dates:", availableDates[dateKey]);
 
-    return !availableDates[dateKey]; // disable dates without availability
+    return !availableDates[dateKey];
   };
 
-  useEffect(() => {
-    if (selectedDoctor) {
-      getAvailableDates(selectedDoctor).then(setAvailableDates);
-    } else {
-      setAvailableDates({});
+  const isTimeSlotDisabled = (hour: string) => {
+    const currentDate = moment().format("YYYY-MM-DD");
+    const currentTime = moment().format("HH:mm");
+    const slotTime = moment(hour, "HH:mm").format("HH:mm");
+
+    if (
+      selectedDate &&
+      moment(selectedDate).format("YYYY-MM-DD") === currentDate &&
+      slotTime < currentTime
+    ) {
+      return true;
     }
-  }, [selectedDoctor]);
+
+    return false;
+  };
 
   console.log("Available dates:", availableDates);
 
@@ -160,11 +172,8 @@ export const DateTimePicker = ({
                 <div className="mx-auto sm:mx-0 flex justify-center my-5 [&>div>div]:shadow-none [&>div>div]:bg-gray-50 [&_div>button]:bg-gray-50">
                   <Calendar
                     onChange={(value) => handleDateChange(value as Date)}
-                    value={selectedDate} // bind selected date to value
+                    value={selectedDate}
                     tileDisabled={isTileDisabled}
-                    // onClickDay={() =>
-                    //   setDateAndTime(date, Number(selectedTime))
-                    // }
                   />
                 </div>
                 <label className="text-sm font-medium text-gray-900 dark:text-white mb-2 block">
@@ -180,8 +189,12 @@ export const DateTimePicker = ({
                         "inline-flex items-center justify-center w-full px-2 py-1 text-sm font-medium text-center border rounded-lg cursor-pointer",
                         selectedTime === hour.hour.toString()
                           ? "bg-blue-500 text-white"
-                          : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50"
+                          : "bg-white text-gray-500 border-gray-200 hover:bg-gray-50",
+                        isTimeSlotDisabled(hour.hour)
+                          ? "opacity-50 cursor-not-allowed"
+                          : ""
                       )}
+                      disabled={isTimeSlotDisabled(hour.hour)}
                     >
                       {hour.hour}
                     </button>

@@ -24,7 +24,5 @@ export const getAvailableDates = async (doctorId: string) => {
     return acc;
   }, {});
 
-  console.log(availableDates);
-
   return availableDates;
 };

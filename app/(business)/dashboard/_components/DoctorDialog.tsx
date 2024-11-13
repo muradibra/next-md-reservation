@@ -72,7 +72,6 @@ export const DoctorDialog = ({ type }: Props) => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    console.log(values);
     const res = await createDoctor({ values });
 
     if (res.ok) {

@@ -38,6 +38,7 @@ type Props = {
 
 import { createTimeSlot, getExistingTimeSlots } from "@/actions/timeSlot";
 import { toast } from "sonner";
+import moment from "moment";
 
 const formSchema = z.object({
   date: z.string().min(1, "Please select a date"),
@@ -56,8 +57,7 @@ export const TimeSlotDialog = ({ type, doctors }: Props) => {
     [key: string]: string[];
   }>({});
   const dialogType = type === "CREATE" ? "Create Timeslot" : "Update Timeslot";
-  const today = new Date().toISOString().split("T")[0];
-  console.log(today);
+  const today = moment().format("YYYY-MM-DD");
 
   useEffect(() => {
     if (selectedDoctor) {
@@ -83,7 +83,7 @@ export const TimeSlotDialog = ({ type, doctors }: Props) => {
     if (res.ok) {
       const timeSlots =
         res.data?.reduce((acc: { [key: string]: string[] }, slot) => {
-          const date = slot.date.toISOString().split("T")[0];
+          const date = moment(slot.date).format("YYYY-MM-DD");
           if (!acc[date]) {
             acc[date] = [];
           }
@@ -98,6 +98,14 @@ export const TimeSlotDialog = ({ type, doctors }: Props) => {
 
   const isTimeSlotDisabled = useCallback(
     (date: string, hour: string) => {
+      const currentDate = moment().format("YYYY-MM-DD");
+      const currentTime = moment().format("HH:mm");
+      const slotTime = moment(hour, "HH:mm").format("HH:mm");
+
+      if (date === currentDate && slotTime < currentTime) {
+        return true;
+      }
+
       return existingTimeSlots[date]?.includes(hour);
     },
     [existingTimeSlots]
@@ -122,7 +130,7 @@ export const TimeSlotDialog = ({ type, doctors }: Props) => {
     console.log(values);
 
     // Convert date to UTC format before sending to the server
-    const utcDate = new Date(values.date).toISOString().split("T")[0];
+    const utcDate = moment(values.date).utc().format("YYYY-MM-DD");
     const updatedValues = { ...values, date: utcDate };
 
     const res = await createTimeSlot({ values: updatedValues });
@@ -190,6 +198,7 @@ export const TimeSlotDialog = ({ type, doctors }: Props) => {
                     <Input
                       type="date"
                       min={today}
+                      disabled={selectedDoctor ? false : true}
                       {...field}
                       onChange={(e) => {
                         const date = e.target.value;
@@ -216,6 +225,7 @@ export const TimeSlotDialog = ({ type, doctors }: Props) => {
                   <FormControl>
                     <Select
                       onValueChange={(value) => form.setValue("hour", value)}
+                      disabled={selectedDoctor ? false : true}
                     >
                       <SelectTrigger className="">
                         <SelectValue placeholder="Select hour" />

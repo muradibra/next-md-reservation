@@ -39,6 +39,64 @@ body {
   background-position: center;
 } */
 
+.loaderContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(255, 255, 255, 0.9); /* Light background overlay */
+  z-index: 9999; /* Ensures it stays on top */
+}
+
+.spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid transparent;
+  border-top: 4px solid #3498db; /* Customize the color */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.p-rating {
+  margin-top: 10px;
+  color: #f39c12;
+  display: flex;
+  gap: 7px;
+}
+
+.p-rating .p-rating-item {
+  /* margin-right: 5px; */
+  transition: transform 0.2s;
+  font-size: 50px;
+}
+
+.p-rating .p-rating-item svg {
+  width: 24px;
+  height: 24px;
+}
+
+.p-rating .p-rating-item:hover {
+  transform: scale(1.2); /* Enlarge the star on hover */
+}
+
+.p-rating .p-rating-item-active {
+  color: #e74c3c; /* Change color for active stars */
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
