@@ -174,6 +174,7 @@ export const DateTimePicker = ({
                     onChange={(value) => handleDateChange(value as Date)}
                     value={selectedDate}
                     tileDisabled={isTileDisabled}
+                    minDate={new Date()}
                   />
                 </div>
                 <label className="text-sm font-medium text-gray-900 dark:text-white mb-2 block">
