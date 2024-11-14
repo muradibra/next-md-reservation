@@ -1,7 +1,6 @@
 "use server";
 
 import stripe from "@/lib/stripe";
-// import { ok } from "assert";
 import { headers } from "next/headers";
 import Stripe from "stripe";
 
@@ -29,8 +28,8 @@ export async function createCheckoutSession(reservationId: string) {
             },
           },
         ],
-        success_url: `/`,
-        cancel_url: `/`,
+        success_url: `${origin}`,
+        cancel_url: `${origin}`,
         metadata: {
           reservationId,
           // userId: loggedUser.id,
