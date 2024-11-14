@@ -15,7 +15,6 @@ import { useRouter, useSearchParams } from "next/navigation";
 export const SortComponent = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
-  // console.log("------searchParams------", searchParams.get("sort"));
 
   return (
     <div className="mb-3">

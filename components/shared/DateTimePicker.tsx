@@ -83,8 +83,6 @@ export const DateTimePicker = ({
 
   const isTileDisabled = ({ date }: { date: Date }) => {
     const dateKey = moment(date).format("YYYY-MM-DD");
-    console.log("Available dates:", availableDates[dateKey]);
-
     return !availableDates[dateKey];
   };
 
@@ -103,8 +101,6 @@ export const DateTimePicker = ({
 
     return false;
   };
-
-  console.log("Available dates:", availableDates);
 
   return (
     <>
@@ -208,7 +204,7 @@ export const DateTimePicker = ({
                     onClick={() => {
                       if (selectedDate && selectedTime) {
                         setDateAndTime(selectedDate, selectedTime);
-                        console.log("Selected time:", selectedTime);
+                        // console.log("Selected time:", selectedTime);
                         closeModal();
                       } else {
                         toast.info("Please select a date and time");

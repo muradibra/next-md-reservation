@@ -127,9 +127,7 @@ export const TimeSlotDialog = ({ type, doctors }: Props) => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    console.log(values);
 
-    // Convert date to UTC format before sending to the server
     const utcDate = moment(values.date).utc().format("YYYY-MM-DD");
     const updatedValues = { ...values, date: utcDate };
 

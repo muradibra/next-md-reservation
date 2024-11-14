@@ -26,20 +26,6 @@ type Props = {
 };
 
 export const ReservationsTable = ({ reservations }: Props) => {
-  console.log(reservations);
-
-  // Swal.fire({
-  //   title: "Are you sure?",
-  //   showCancelButton: true,
-  //   confirmButtonText: "Delete",
-  //   denyButtonText: `Don't save`,
-  // }).then((result) => {
-  //   /* Read more about isConfirmed, isDenied below */
-  //   if (result.isConfirmed) {
-  //     Swal.fire("User deleted!", "", "success");
-  //   }
-  // });
-
   return (
     <Table>
       <TableHeader>

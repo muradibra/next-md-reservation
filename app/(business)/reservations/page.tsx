@@ -30,8 +30,6 @@ const ReservationsPage = async () => {
       })
     : [];
 
-  console.log(userReservations);
-
   return (
     <div>
       <PageHeading pageTitle="Your Reservations" pagePath="Reservations" />

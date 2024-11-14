@@ -14,14 +14,11 @@ const DoctorsPage = async ({
   const { sort } = searchParams;
   const [key, value] = sort ? sort.split("-") : ["createdAt", "asc"];
 
-  console.log("------sortedSort------", key, value);
-
   const doctors = await prisma.doctor.findMany({
     orderBy: {
       [key]: value,
     },
   });
-  console.log("------searchParams------", searchParams);
 
   return (
     <div>
