@@ -52,6 +52,7 @@ type Props = {
 };
 
 export const WriteReview = ({ doctors, userId }: Props) => {
+  const [selectedDoctor, setSelectedDoctor] = useState<string | null>(null);
   const [value, setValue] = useState(0);
   const router = useRouter();
 
@@ -86,12 +87,13 @@ export const WriteReview = ({ doctors, userId }: Props) => {
 
     if (res.ok) {
       toast.success(res.message);
-      // router.push("/reviews");
+      form.reset();
+      setValue(0);
+      setSelectedDoctor(null);
     } else {
       toast.error(res.message);
     }
   }
-  console.log("value", value);
 
   return (
     <section
@@ -107,7 +109,7 @@ export const WriteReview = ({ doctors, userId }: Props) => {
                   <div className="w-[16px] h-[17px]">
                     <img src={icon.src} alt="" className="w-full h-auto" />
                   </div>
-                  <span>Review</span>
+                  <span className="text-[#009ace] font-medium ">Review</span>
                 </div>
                 <div>
                   <h2 className="text-[#292929] font-medium leading-[130%] text-[30px] md:text-[40px] lg:text-[50px]">
@@ -131,18 +133,10 @@ export const WriteReview = ({ doctors, userId }: Props) => {
                         <FormLabel className="md:text-[20px]">Doctor</FormLabel>
                         <FormControl>
                           <Select
-                            // value={selectedDoctor || ""}
+                            value={selectedDoctor || ""}
                             onValueChange={(value) => {
                               form.setValue("doctor", value);
-                              // setSelectedDoctor(value);
-
-                              // form.setValue("date", "");
-                              // form.setValue("hour", "");
-                              // form.setValue("message", "");
-                              // setSelectedTime("");
-                              // setSelectedTimeSlotId(null);
-                              // setAvailableHours([]);
-                              // setAvailableDates({});
+                              setSelectedDoctor(value);
                             }}
                           >
                             <SelectTrigger>

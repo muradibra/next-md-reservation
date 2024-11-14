@@ -36,9 +36,11 @@ const ReservationsPage = async () => {
     <div>
       <PageHeading pageTitle="Your Reservations" pagePath="Reservations" />
       {!userId ? (
-        <h1 className="text-2xl my-[60px] font-semibold text-center text-[#009ace]">
-          To see your reservations, please sign in to your account
-        </h1>
+        <div className="w-container">
+          <h1 className="text-2xl my-[60px] font-semibold text-center text-[#009ace]">
+            To see your reservations, please sign in to your account
+          </h1>
+        </div>
       ) : (
         <div className="w-container">
           <h1 className="text-2xl font-semibold text-center mt-[60px] mb-[20px] text-[#009ace]">

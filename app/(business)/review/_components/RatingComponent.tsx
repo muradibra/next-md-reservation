@@ -9,11 +9,7 @@ type Props = {
 export const RatingComponent = ({ value, setValue }: Props) => {
   return (
     <div className="">
-      <Rating
-        value={value}
-        onChange={(e) => setValue(e.value ?? 0)}
-        size={100}
-      />
+      <Rating value={value} onChange={(e) => setValue(e.value ?? 0)} />
     </div>
   );
 };
