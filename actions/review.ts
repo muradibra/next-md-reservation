@@ -40,3 +40,26 @@ export async function postReview({ obj }: PostReviewProps) {
     };
   }
 }
+
+export async function deleteReview(reviewId: string) {
+  try {
+    await prisma.review.delete({
+      where: {
+        id: reviewId,
+      },
+    });
+
+    revalidatePath("/dashboard");
+
+    return {
+      ok: true,
+      message: "Review deleted successfully",
+    };
+  } catch (error: any) {
+    console.error(error);
+    return {
+      ok: false,
+      message: error.message,
+    };
+  }
+}

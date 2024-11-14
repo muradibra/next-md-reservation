@@ -8,6 +8,7 @@ interface DoctorValues {
     firstName: string;
     lastName: string;
     specialty: string;
+    imgUrl: string;
   };
 }
 
@@ -40,6 +41,60 @@ export async function createDoctor({ values }: DoctorValues) {
     return {
       ok: false,
       message: "Doctor creation failed",
+    };
+  }
+}
+
+export async function updateDoctor({
+  doctorId,
+  values,
+}: {
+  doctorId: string;
+  values: DoctorValues["values"];
+}) {
+  try {
+    const doctor = await prisma.doctor.update({
+      where: {
+        id: doctorId,
+      },
+      data: {
+        ...values,
+      },
+    });
+
+    revalidatePath("/dashboard");
+
+    return {
+      ok: true,
+      message: "Doctor updated successfully",
+      doctor,
+    };
+  } catch (error: any) {
+    return {
+      ok: false,
+      message: error.message,
+    };
+  }
+}
+
+export async function deleteDoctor(doctorId: string) {
+  try {
+    await prisma.doctor.delete({
+      where: {
+        id: doctorId,
+      },
+    });
+
+    revalidatePath("/dashboard");
+
+    return {
+      ok: true,
+      message: "Doctor deleted successfully",
+    };
+  } catch (error: any) {
+    return {
+      ok: false,
+      message: error.message,
     };
   }
 }

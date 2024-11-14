@@ -23,12 +23,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { createDoctor } from "@/actions/doctor";
+import { createDoctor, updateDoctor } from "@/actions/doctor";
 import { toast } from "sonner";
 import { UploadSingleImage } from "@/components/shared/UploadSingleImage";
+import { Pencil2Icon } from "@radix-ui/react-icons";
+import { Doctor } from "@prisma/client";
 
 type Props = {
   type: "CREATE" | "UPDATE";
+  doctor?: Doctor;
 };
 
 const formSchema = z.object({
@@ -46,7 +49,7 @@ const formSchema = z.object({
   }),
 });
 
-export const DoctorDialog = ({ type }: Props) => {
+export const DoctorDialog = ({ type, doctor }: Props) => {
   const dialogType = type === "CREATE" ? "Create Doctor" : "Update Doctor";
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -54,10 +57,10 @@ export const DoctorDialog = ({ type }: Props) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      firstName: "",
-      lastName: "",
-      specialty: "",
-      imgUrl: "",
+      firstName: doctor?.firstName ?? "",
+      lastName: doctor?.lastName ?? "",
+      specialty: doctor?.specialty ?? "",
+      imgUrl: doctor?.imgUrl ?? "",
     },
   });
 
@@ -72,14 +75,29 @@ export const DoctorDialog = ({ type }: Props) => {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    const res = await createDoctor({ values });
+    if (dialogType === "Create Doctor") {
+      const res = await createDoctor({ values });
 
-    if (res.ok) {
-      toast.success(res.message);
-      form.reset();
-      setIsOpen(false);
+      if (res.ok) {
+        toast.success(res.message);
+        form.reset();
+        setIsOpen(false);
+      } else {
+        toast.error(res.message);
+      }
     } else {
-      toast.error(res.message);
+      const res = await updateDoctor({
+        doctorId: doctor?.id ?? "",
+        values,
+      });
+
+      if (res.ok) {
+        toast.success(res.message);
+        form.reset();
+        setIsOpen(false);
+      } else {
+        toast.error(res.message);
+      }
     }
     setIsLoading(false);
   }
@@ -87,7 +105,13 @@ export const DoctorDialog = ({ type }: Props) => {
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button>{dialogType}</Button>
+        <Button>
+          {dialogType === "Update Doctor" ? (
+            <Pencil2Icon className="w-3 h-3" />
+          ) : (
+            "Create Doctor"
+          )}
+        </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -152,7 +176,7 @@ export const DoctorDialog = ({ type }: Props) => {
             />
 
             <Button disabled={isLoading} className="w-full" type="submit">
-              {dialogType}
+              {dialogType === "Update Doctor" ? "Update" : "Create"}
             </Button>
           </form>
         </Form>

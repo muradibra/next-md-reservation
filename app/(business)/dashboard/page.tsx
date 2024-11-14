@@ -8,6 +8,7 @@ import { TimeSlotTable } from "./_components/TimeSlotTable";
 import { TimeSlotDialog } from "./_components/TimeSlotDialog";
 import { DoctorsTable } from "./_components/DoctorsTable";
 import { DoctorDialog } from "./_components/DoctorDialog";
+import { ReviewsTable } from "./_components/ReviewsTable";
 
 const DashboardPage = async () => {
   const { userId } = await getCurrentUserFromClerk();
@@ -43,6 +44,12 @@ const DashboardPage = async () => {
       reservations: true,
     },
   });
+  const reviews = await prisma.review.findMany({
+    include: {
+      user: true,
+      doctor: true,
+    },
+  });
 
   return (
     <div>
@@ -67,6 +74,16 @@ const DashboardPage = async () => {
             <DoctorDialog type="CREATE" />
           </div>
           <DoctorsTable doctors={doctors} />
+        </div>
+      </div>
+
+      <div className="py-[30px] sm:py-[50px] md:py-[70px] lg:py-[90px]">
+        <div className="w-container">
+          <div className="flex justify-between items-center mb-3">
+            <h1 className="text-3xl mb-3 font-bold">Reviews</h1>
+            {/* <TimeSlotDialog type="CREATE" doctors={doctors} /> */}
+          </div>
+          <ReviewsTable reviews={reviews} />
         </div>
       </div>
 

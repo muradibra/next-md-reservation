@@ -28,8 +28,8 @@ model Doctor {
   specialty String
   imgUrl    String @default("")
 
-  timeSlots    TimeSlot[] // Reference to available time slots
-  reservations Reservation[] // Reference to reservations
+  timeSlots    TimeSlot[]
+  reservations Reservation[]
   reviews      Review[]
 
   createdAt DateTime @default(now())
@@ -39,22 +39,22 @@ model Doctor {
 model TimeSlot {
   id        String   @id @default(cuid())
   doctorId  String
-  date      DateTime // Stores the specific day (e.g., 2024-10-31)
-  hour      String // Stores the hour (e.g., 9 for 9 AM, 17 for 5 PM)
-  available Boolean  @default(true) // Indicates if this slot is available
+  date      DateTime
+  hour      String
+  available Boolean  @default(true)
 
   doctor      Doctor       @relation(fields: [doctorId], references: [id])
-  reservation Reservation? // Optional link to Reservation when booked
+  reservation Reservation?
 
-  @@unique([doctorId, date, hour]) // Ensure unique slots per doctor per day and hour
+  @@unique([doctorId, date, hour])
 }
 
 model Reservation {
   id       String  @id @default(cuid())
   userId   String
   doctorId String
-  slotId   String  @unique // Each slot can only be reserved once
-  status   String // 'pending', 'confirmed', 'cancelled'
+  slotId   String  @unique
+  status   String
   message  String?
 
   user     User     @relation(fields: [userId], references: [externalId])

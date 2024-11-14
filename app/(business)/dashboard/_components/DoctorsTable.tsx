@@ -11,6 +11,11 @@ import {
 } from "@/components/ui/table";
 import { Doctor as PrismaDoctor, Review, Reservation } from "@prisma/client";
 import Image from "next/image";
+import { DoctorDialog } from "./DoctorDialog";
+import { Button } from "@/components/ui/button";
+import { Trash2Icon } from "lucide-react";
+import Swal from "sweetalert2";
+import { deleteDoctor } from "@/actions/doctor";
 
 type Doctor = PrismaDoctor & {
   reviews: Review[];
@@ -22,17 +27,23 @@ type Props = {
 };
 
 export const DoctorsTable = ({ doctors }: Props) => {
-  // Swal.fire({
-  //   title: "Are you sure?",
-  //   showCancelButton: true,
-  //   confirmButtonText: "Delete",
-  //   denyButtonText: `Don't save`,
-  // }).then((result) => {
-  //   /* Read more about isConfirmed, isDenied below */
-  //   if (result.isConfirmed) {
-  //     Swal.fire("User deleted!", "", "success");
-  //   }
-  // });
+  const handleDoctorDelete = (doctorId: string) => {
+    Swal.fire({
+      title: "Are you sure?",
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+      denyButtonText: `Don't save`,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const res = await deleteDoctor(doctorId);
+        if (res.ok) {
+          Swal.fire("Doctor deleted!", "", "success");
+        } else {
+          Swal.fire("Failed to delete user", "", "error");
+        }
+      }
+    });
+  };
 
   return (
     <Table>
@@ -67,8 +78,15 @@ export const DoctorsTable = ({ doctors }: Props) => {
             <TableCell className="text-center">
               {doctor.reservations.length}
             </TableCell>
-            <TableCell className="text-center">
-              {/* <DoctorDialog type="UPDATE" /> */}
+            <TableCell className="text-center ">
+              <DoctorDialog type="UPDATE" doctor={doctor} />
+              <Button
+                variant={"destructive"}
+                className="py-[8px] px-[16px] ml-[5px]"
+                onClick={() => handleDoctorDelete(doctor?.id)}
+              >
+                <Trash2Icon className="w-4 h-4" />
+              </Button>
             </TableCell>
           </TableRow>
         ))}
